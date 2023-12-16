@@ -59,6 +59,8 @@ public class ListService {
 		} else {
 			col = addCollectionToDB(new Collection(name, user));
 		}
+		user.addList(col);
+		userRepo.save(user);
 
 		return col;
 	}
@@ -116,7 +118,6 @@ public class ListService {
 
 	    // Agrega la relación bidireccional 
 	    collection.getGamesList().add(listGames);
-	    game.getCollections().add(listGames);
 
 	    // Guarda las entidades
 	    listRepo.save(collection);
@@ -134,7 +135,7 @@ public class ListService {
 		return resp;
 	}
 
-	private String getImageResponse(com.gamelist.main.igbd.CoverGame data) throws IOException {
+	public String getImageResponse(com.gamelist.main.igbd.CoverGame data) throws IOException {
 		String ss = data.getImage_id();
 		String imageUrl = ImageBuilderKt.imageBuilder(ss, ImageSize.SCREENSHOT_BIG, ImageType.PNG);
 		byte[] image = igdbService.processImage(imageUrl);

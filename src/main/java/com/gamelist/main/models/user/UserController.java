@@ -22,10 +22,10 @@ public class UserController {
 	
 	
 	@PostMapping
-	public ResponseEntity<UserResponseDto> createUser(@RequestParam String username, MultipartFile avatar ) throws IOException{
+	public ResponseEntity<User> createUser(@RequestParam String username, MultipartFile avatar ) throws IOException{
 		User user = userService.createUser(username,avatar);
-		UserResponseDto dto = new UserResponseDto(user.getUsername(),user.getBio(),user.getImage().getImageUrl());
-		return ResponseEntity.ok(dto); 
+		
+		return ResponseEntity.ok(user); 
 	}
 	
 	@PutMapping
@@ -36,13 +36,13 @@ public class UserController {
 	
 	@GetMapping
 	public ResponseEntity<UserResponseDto> getUser(@RequestParam long id){
-		User user = userService.getUserReference(id);
-		UserResponseDto dto = new UserResponseDto(user.getUsername(),user.getBio(),user.getImage().getImageUrl());
-		return ResponseEntity.ok(dto);
+		UserResponseDto user = userService.getUserReference(id);
+		return ResponseEntity.ok(user);
 	}
 	
 	@GetMapping("/test")
-	public ResponseEntity test() {
-		return ResponseEntity.ok("AAAAAAAA");
+	public ResponseEntity test(@RequestParam long id) {
+		User user  = userService.getUser(id);
+		return ResponseEntity.ok(user);
 	}
 }

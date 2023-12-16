@@ -1,6 +1,14 @@
 package com.gamelist.main.models.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.gamelist.main.models.favorites.Favorite;
 import com.gamelist.main.models.images.Images;
+import com.gamelist.main.models.list.Collection;
+import com.gamelist.main.models.reviews.Review;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,15 +16,19 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
 	@Id
@@ -28,11 +40,21 @@ public class User {
 	private String bio;
 	
 	
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "image_id", nullable = true)
 	private Images image;
 	
+	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Review> reviews = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Collection> lists = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Favorite> favorites = new ArrayList<>();
 
 	public User(String username, Images image) {
 		this.username = username;
@@ -46,6 +68,17 @@ public class User {
 	
 	public void updateBio(String bio) {
 		this.bio = bio;
+	}
+
+
+	public void addList(Collection col) {
+		this.lists.add(col);		
+	}
+
+
+	public void addFavorite(Favorite favorite) {
+		this.favorites.add(favorite);
+		
 	}
 
 }
