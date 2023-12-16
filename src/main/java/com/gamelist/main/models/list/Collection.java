@@ -3,15 +3,13 @@ package com.gamelist.main.models.list;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.web.multipart.MultipartFile;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.gamelist.main.models.images.Images;
 import com.gamelist.main.models.listGames.ListGames;
 import com.gamelist.main.models.user.User;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,6 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "lists")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Collection {
 
 
@@ -40,13 +39,13 @@ public class Collection {
 	
 	private String name;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 	
 
 	private long likes = 1;
 	
-	@OneToMany(mappedBy = "collection")
+	@OneToMany(mappedBy = "collection",fetch = FetchType.LAZY)
 	private List<ListGames> gamesList = new ArrayList<>();
 	
 	

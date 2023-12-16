@@ -1,5 +1,6 @@
 package com.gamelist.main.models.user;
 
+import java.awt.Image;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.gamelist.main.cloudinary.CloudinaryComs;
 import com.gamelist.main.models.images.ImageRepository;
 import com.gamelist.main.models.images.Images;
+import com.gamelist.main.models.reviews.ReviewService;
 
 import jakarta.transaction.Transactional;
 
@@ -23,6 +25,9 @@ public class UserService {
 	
 	@Autowired
 	private CloudinaryComs cloudinary;
+	
+	@Autowired
+	private ReviewService reviewService;
 
 	//TODO EXCEPTION TRY/CATCH
 	@Transactional
@@ -30,7 +35,7 @@ public class UserService {
 		Images image = cloudinary.upload(avatar);		
 		User user = userRepo.save(new User(username,image));		
 //		image.setUser(user);
-		imagesRepo.save(image);
+//		imagesRepo.save(image);
 		return user;
 	} 
 
@@ -55,10 +60,16 @@ public class UserService {
 	}
 
 	@Transactional
-	public User getUserReference(long id) {
+	public UserResponseDto getUserReference(long id) {
+		
 		User user = userRepo.getReferenceById(id);
-		Images image = user.getImage();
-		user.setImage(image);
+		UserResponseDto response = new UserResponseDto(user.getId(),user.getUsername(), user.getBio(), user.getImage().getImageUrl());
+		System.out.println(response);
+		return response;
+	}
+
+	public User getUser(long userId) {
+		User user = userRepo.getReferenceById(userId);
 		return user;
 	}
 }
