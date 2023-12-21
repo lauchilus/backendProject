@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.gamelist.main.backlog.Backlog;
 import com.gamelist.main.models.favorites.Favorite;
 import com.gamelist.main.models.images.Images;
 import com.gamelist.main.models.list.Collection;
@@ -55,6 +56,10 @@ public class User {
 	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Favorite> favorites = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Backlog> backlog = new ArrayList<>();
 
 	public User(String username, Images image) {
 		this.username = username;

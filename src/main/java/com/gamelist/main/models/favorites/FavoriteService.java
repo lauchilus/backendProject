@@ -11,6 +11,7 @@ import com.api.igdb.utils.ImageBuilderKt;
 import com.api.igdb.utils.ImageSize;
 import com.api.igdb.utils.ImageType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gamelist.main.igbd.CoverGame;
 import com.gamelist.main.igbd.IgdbService;
 import com.gamelist.main.models.game.Game;
 import com.gamelist.main.models.game.GameRepository;
@@ -46,7 +47,7 @@ public class FavoriteService {
 		List<FavoritesResponseDto> responseList = new ArrayList<>();
 		ObjectMapper objectMapper = new ObjectMapper();
 		for (Favorite favorite : favorites) {
-			String res = igdbService.searchGameById2(favorite.getGame().getIgdbGameId());
+			String res = igdbService.searchGameByIdToList(favorite.getGame().getIgdbGameId());
 			GameListData[] data = objectMapper.readValue(res, GameListData[].class);
 			GameListData dat = data[0];
 			String image = getImageResponse(dat.getCover());
@@ -56,7 +57,7 @@ public class FavoriteService {
 		return responseList;
 	}
 	
-	public String getImageResponse(com.gamelist.main.igbd.CoverGame data) throws IOException {
+	public String getImageResponse(CoverGame data) throws IOException {
 		String ss = data.getImage_id();
 		String imageUrl = ImageBuilderKt.imageBuilder(ss, ImageSize.COVER_BIG, ImageType.PNG);
 		

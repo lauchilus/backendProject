@@ -1,6 +1,8 @@
 package com.gamelist.main.igbd;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 @Controller
 @RequestMapping("/games")
 public class IgdbController {
@@ -18,15 +23,11 @@ public class IgdbController {
 	private IgdbService igdb;
 	
 	
-	@GetMapping("/list")
-	public ResponseEntity games(@RequestParam int offset) {
-		String a = igdb.listGames(offset);
-		return ResponseEntity.ok(a);
-	}
-	
-	@GetMapping("/test")
-	public String test() {
-		return "funciona";
+	@GetMapping()
+	public ResponseEntity<List<SearchGameListDto>> games(@RequestParam int offset) throws JsonMappingException, JsonProcessingException {
+		String list = igdb.listGames(offset);
+		List<SearchGameListDto> response = igdb.processGameToListDto(list);
+		return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping("/{id}")
@@ -36,8 +37,8 @@ public class IgdbController {
 	}
 	
 	@GetMapping("/a/{name}")
-	public ResponseEntity game2(@PathVariable String name) throws IOException {
-		String a = igdb.searchGame(name);
+	public ResponseEntity<SearchGameDetailsDto> gameDetails(@PathVariable String name) throws IOException {
+		SearchGameDetailsDto a = igdb.searchGameDetails(name);
 		return ResponseEntity.ok(a);
 	}
 	
