@@ -101,7 +101,7 @@ public class ListService {
 		List<GameResponseDTO> responseList = new ArrayList<>();
 		ObjectMapper objectMapper = new ObjectMapper();
 		for (ListGames game : collection.getGamesList()) {
-			String res = igdbService.searchGameById2(game.getGame().getIgdbGameId());
+			String res = igdbService.searchGameByIdToList(game.getGame().getIgdbGameId());
 			GameListData[] data = objectMapper.readValue(res, GameListData[].class);
 			GameListData dat = data[0];
 			String image = getImageResponse(dat.getCover());
@@ -126,7 +126,7 @@ public class ListService {
 	}
 
 	private SearchResponseDto getGameIgdb(long id) throws IOException {
-		String response = igdbService.searchGameById2(id);
+		String response = igdbService.searchGameByIdToList(id);
 		ObjectMapper objectMapper = new ObjectMapper();
 		GameData[] dataArray = objectMapper.readValue(response, GameData[].class);
 		GameData data = dataArray[0];
