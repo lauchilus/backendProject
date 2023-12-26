@@ -4,8 +4,12 @@ import java.util.List;
 
 import com.gamelist.main.igbd.SearchGameListDto;
 
+import lombok.Builder;
+
+@Builder
 public record BacklogUserResponseDto(
-		List<SearchGameListDto> games
+		long idBacklog,
+		SearchGameListDto game
 		) {
 
 }

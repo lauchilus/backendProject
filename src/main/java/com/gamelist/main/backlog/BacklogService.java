@@ -22,42 +22,52 @@ public class BacklogService {
 
 	@Autowired
 	private BacklogRepository backlogRepo;
-	
+
 	@Autowired
 	private UserRepository userRepo;
-	
+
 	@Autowired
 	private GameRepository gameRepo;
-	
+
 	@Autowired
 	private IgdbService igdb;;
-	
+
 	@Transactional
-	public Backlog addGameToBacklog(long userId, long gameId) {
+	public BacklogUserResponseDto addGameToBacklog(long userId, long gameId)
+			throws JsonMappingException, JsonProcessingException {
 		User user = userRepo.getReferenceById(userId);
-	    Game game = gameRepo.getReferenceByIgdbGameId(gameId);
-	    System.out.println(game);
-	    if (game == null) {
-	        // Create a new Game if it doesn't exist
-	        game = gameRepo.save(new Game(gameId));
-	    }
+		Game game = gameRepo.getReferenceByIgdbGameId(gameId);
+		System.out.println(game);
+		if (game == null) {
+			// Create a new Game if it doesn't exist
+			game = gameRepo.save(new Game(gameId));
 
-	    // Create and save Backlog
-	    Backlog backlog = backlogRepo.save(new Backlog(user, game));
+		}
 
-	    return backlog;
+		// Create and save Backlog
+		Backlog backlog = backlogRepo.save(new Backlog(user, game));
+		if(user.getBacklog().contains(backlog)) {
+			throw new RuntimeException("Backlog already exist!!");
+		}
+		SearchGameListDto s = igdb.getDataToDto(backlog.getGame().getIgdbGameId());
+		BacklogUserResponseDto bs = new BacklogUserResponseDto(backlog.getId(), s);
+
+		return bs;
 	}
-	
-	
-	public BacklogUserResponseDto getAllBacklogsFromUser(long userId) throws JsonMappingException, JsonProcessingException {
+
+	public List<BacklogUserResponseDto> getAllBacklogsFromUser(long userId)
+			throws JsonMappingException, JsonProcessingException {
 		List<Backlog> b = backlogRepo.getReferenceByUserId(userId);
-		List<SearchGameListDto> search = new ArrayList<>();
+		List<BacklogUserResponseDto> response = new ArrayList<>();
 		for (Backlog back : b) {
 			SearchGameListDto s = igdb.getDataToDto(back.getGame().getIgdbGameId());
-			search.add(s);
+			BacklogUserResponseDto bs = new BacklogUserResponseDto(back.getId(), s);
+			response.add(bs);
 		}
-		BacklogUserResponseDto response = new BacklogUserResponseDto(search);
+
 		return response;
 	}
+
+	// TODO DELETE SERVICE
 
 }

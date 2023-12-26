@@ -65,18 +65,38 @@ public class FavoriteService {
 	}
 
 	@Transactional
-	public FavoritesCreateDto addFavoriteToUser(long userId, long gameId) {
+	public FavoritesCreateDto addFavoriteToUser(long userId, long gameId) throws Exception {
 		User user = userService.getUser(userId);
 		Game game = gameRepo.getReferenceByIgdbGameId(gameId);
 		if(game==null) {
 			game = gameRepo.save(new Game(gameId));
 		}
+		if(favoriteRepo.existsByGameAndUser(game,user)) {
+			throw new Exception("Game already in list!");
+		}
 		Favorite fav = favoriteRepo.save(new Favorite(game,user));
+		
 		user.addFavorite(fav);
 		userRepo.save(user);
 		FavoritesCreateDto response = new FavoritesCreateDto(fav.getId(), fav.getGame().getIgdbGameId());
 		return response;
 	}
+	
+	public List<FavoritesResponseDto> getUserTopFavorites(long id) throws IOException {
+		List<Favorite> favorites = favoriteRepo.findTop4ByUserId(id);
+		List<FavoritesResponseDto> responseList = new ArrayList<>();
+		ObjectMapper objectMapper = new ObjectMapper();
+		for (Favorite favorite : favorites) {
+			String res = igdbService.searchGameByIdToList(favorite.getGame().getIgdbGameId());
+			GameListData[] data = objectMapper.readValue(res, GameListData[].class);
+			GameListData dat = data[0];
+			String image = getImageResponse(dat.getCover());
+			FavoritesResponseDto resp = new FavoritesResponseDto(favorite.getId(),favorite.getGame().getIgdbGameId(),dat.getName(),image);
+			responseList.add(resp);
+		}
+		return responseList;
+	}
+	
 	
 	
 }
