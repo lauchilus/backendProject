@@ -1,6 +1,9 @@
 package com.gamelist.main.igbd;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,13 +40,12 @@ public class IgdbService {
 		return response.getBody().toString();
 	}
 
-	public SearchGameDetailsDto searchGameDetails(String game) throws JsonMappingException, JsonProcessingException {
+	public SearchGameDetailsDto searchGameDetails(long game) throws JsonMappingException, JsonProcessingException {
 		APICalypse apiCalypse = new APICalypse()
 				.fields("summary,name,first_release_date, cover.image_id,involved_companies.company.name")
-				.search(game.toLowerCase()).where("category=0").limit(1);
+				.where("id=" + game).limit(1);
 		String requestBody = apiCalypse.buildQuery();
 		ResponseEntity<String> res = callEndpointGames(requestBody);
-		System.out.println(res);
 		SearchGameDetailsDto response = processGameToDto(res.getBody());
 		return response;
 	}
@@ -53,10 +55,45 @@ public class IgdbService {
 		JsonNode jsonNode = objectMapper.readTree(game);
 		String a = getImageGameUrl(jsonNode.get(0).get("cover").get("image_id").asText());
 		String image = a;
+		Instant instant = Instant.ofEpochSecond(jsonNode.get(0).get("first_release_date").asLong());
+		LocalDate date = instant.atZone(ZoneId.systemDefault()).toLocalDate();
 		SearchGameDetailsDto response = new SearchGameDetailsDto(jsonNode.get(0).get("id").asLong(),
 				jsonNode.get(0).get("summary").asText(), jsonNode.get(0).get("name").asText(),
-				jsonNode.get(0).get("first_release_date").asLong(), image,
+				date, image,
 				jsonNode.get(0).get("involved_companies").get(0).get("company").get("name").asText());
+		
+		return response;
+	}
+
+	public List<SearchGameListDto> searchGameListByName(String game,int offset)
+			throws JsonMappingException, JsonProcessingException {
+		APICalypse apiCalypse = new APICalypse()
+				.fields("name,cover.image_id")
+				.search(game.toLowerCase()).where("category=0").offset(offset).limit(12 );
+		String requestBody = apiCalypse.buildQuery();
+		ResponseEntity<String> res = callEndpointGames(requestBody);
+		List<SearchGameListDto> response = processGameToDtoList(res.getBody());
+
+		return response;
+	}
+
+	private List<SearchGameListDto> processGameToDtoList(String game)
+			throws JsonMappingException, JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		JsonNode jsonNode = objectMapper.readTree(game);
+		List<SearchGameListDto> response = new ArrayList<>();
+		for (JsonNode j : jsonNode) {
+			String a = "";
+			System.out.println(j.has("cover"));
+			if (j.has("cover")) {
+				a = getImageGameUrl(j.get("cover").get("image_id").asText());
+				String image = a;
+				SearchGameListDto r = new SearchGameListDto(j.get("id").asLong(), j.get("name").asText(), image);
+				response.add(r);
+			}
+
+			
+		}
 
 		return response;
 	}
@@ -80,6 +117,7 @@ public class IgdbService {
 	private String getImageGameUrl(String imageId) {
 		String image_id = imageId;
 		String imageURL = ImageBuilderKt.imageBuilder(image_id, ImageSize.COVER_BIG, ImageType.PNG);
+		
 		return imageURL;
 	}
 
@@ -110,6 +148,13 @@ public class IgdbService {
 
 	public String searchGameByIdToList(long id) throws IOException {
 		APICalypse apiCalypse = new APICalypse().fields("name,storyline,follows,cover.image_id").where("id=" + id);
+		String requestBody = apiCalypse.buildQuery();
+		ResponseEntity<String> response = callEndpointGames(requestBody);
+		return response.getBody().toString();
+	}
+	
+	public String searchGameByIdToListDto(long id) throws IOException {
+		APICalypse apiCalypse = new APICalypse().fields("name,,cover.image_id").where("id=" + id);
 		String requestBody = apiCalypse.buildQuery();
 		ResponseEntity<String> response = callEndpointGames(requestBody);
 		return response.getBody().toString();

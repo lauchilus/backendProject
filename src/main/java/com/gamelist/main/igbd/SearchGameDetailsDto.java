@@ -1,10 +1,12 @@
 package com.gamelist.main.igbd;
 
+import java.time.LocalDate;
+
 public record SearchGameDetailsDto(
 		Long id,
 		String summary,
 		String name,
-		Long releaseDate,
+		LocalDate releaseDate,
 		String imageUrl,
 		String involvedCompany
 		

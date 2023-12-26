@@ -9,7 +9,9 @@ public record ReviewResponseDto(
 		LocalDate date,
 		String review,
 		float rating,
-		String game
+		String name,
+		String gameImage,
+		long gameId
 		) {
 
 	

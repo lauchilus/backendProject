@@ -17,7 +17,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gamelist.main.cloudinary.CloudinaryComs;
 import com.gamelist.main.igbd.GameData;
 import com.gamelist.main.igbd.IgdbService;
+import com.gamelist.main.igbd.SearchGameListDto;
 import com.gamelist.main.igbd.SearchResponseDto;
+import com.gamelist.main.models.favorites.Favorite;
+import com.gamelist.main.models.favorites.FavoritesResponseDto;
 import com.gamelist.main.models.game.Game;
 import com.gamelist.main.models.game.GameRepository;
 import com.gamelist.main.models.images.Images;
@@ -96,16 +99,17 @@ public class ListService {
 		return "Game Added";
 	}
 
-	public List<GameResponseDTO> getGamesCollection(long collectionID) throws IOException {
+	public List<SearchGameListDto> getGamesCollection(long collectionID) throws IOException {
 		Collection collection = listRepo.getReferenceById(collectionID);
-		List<GameResponseDTO> responseList = new ArrayList<>();
+		List<ListGames> listGames = collection.getGamesList();
+		List<SearchGameListDto> responseList = new ArrayList<>();
 		ObjectMapper objectMapper = new ObjectMapper();
-		for (ListGames game : collection.getGamesList()) {
+		for (ListGames game : listGames) {
 			String res = igdbService.searchGameByIdToList(game.getGame().getIgdbGameId());
 			GameListData[] data = objectMapper.readValue(res, GameListData[].class);
 			GameListData dat = data[0];
 			String image = getImageResponse(dat.getCover());
-			GameResponseDTO resp = new GameResponseDTO(dat, image, game.getId());
+			SearchGameListDto resp = new SearchGameListDto(dat.getId(),dat.getName(),image);
 			responseList.add(resp);
 		}
 		return responseList;
@@ -137,10 +141,8 @@ public class ListService {
 
 	public String getImageResponse(com.gamelist.main.igbd.CoverGame data) throws IOException {
 		String ss = data.getImage_id();
-		String imageUrl = ImageBuilderKt.imageBuilder(ss, ImageSize.SCREENSHOT_BIG, ImageType.PNG);
-		byte[] image = igdbService.processImage(imageUrl);
-		String base64Image = Base64.getEncoder().encodeToString(image);
-		return base64Image;
+		String imageUrl = ImageBuilderKt.imageBuilder(ss, ImageSize.COVER_BIG, ImageType.PNG);
+		return imageUrl;
 	}
 
 }

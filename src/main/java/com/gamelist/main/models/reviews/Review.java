@@ -16,11 +16,13 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="reviews")
@@ -45,10 +47,11 @@ public class Review {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Game game;
 	
-	public Review(User user, String review,Game game) {
+	public Review(User user, String review,Game game, float rating) {
 		this.user = user;
 		this.review = review;
 		this.game = game;
 		this.review_date = LocalDate.now();
+		this.rating = rating;
 	}
 }

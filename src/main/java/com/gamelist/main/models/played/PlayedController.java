@@ -1,11 +1,14 @@
 package com.gamelist.main.models.played;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
+@CrossOrigin
 @RequestMapping("/played")
 public class PlayedController {
 	
@@ -21,18 +25,16 @@ public class PlayedController {
 	private PlayedService playedService;
 	
 	@PostMapping
-	public ResponseEntity<PlayedPostResponse> addPlayed(@RequestParam long user,@RequestParam long gameID){
+	public ResponseEntity<PlayedPostResponse> addPlayed(@RequestParam long user,@RequestParam long gameID) throws Exception{
 		Played played = playedService.addPlayed(user,gameID);
-		PlayedPostResponse response = new PlayedPostResponse(played.getId(), played.getGame_id(), played.getFinish_date());
+		PlayedPostResponse response = new PlayedPostResponse(played.getId(), played.getGameId(), played.getFinish_date());
 		return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping("/{user}")
-	public ResponseEntity<List<PlayedPostResponse>> getAllUserPlayed(@PathVariable long user){
-		List<Played> played = playedService.getAllUserPlayed(user);
-		List<PlayedPostResponse> response = played.stream()
-		        .map((Played played2) -> new PlayedPostResponse(played2.getId(), played2.getGame_id(), played2.getFinish_date()))
-		        .collect(Collectors.toList());
+	public ResponseEntity<List<PlayedResponse>> getAllUserPlayed(@PathVariable long user,@RequestParam int page) throws IOException{
+		List<PlayedResponse> response = playedService.getAllUserPlayed(user,PageRequest.of(page, 2));
+		
 		return ResponseEntity.ok(response);
 	}
 }
