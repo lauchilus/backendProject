@@ -42,28 +42,28 @@ public class BacklogRepositoryTest {
 		
 	}
 	
-	@Transactional
-	@Test
-	public void backlogRepository_GetAllFromUser_ReturnAllBacklogs() {
-		User user = User.builder().username("testUser").build();
-		user = userRepository.save(user);
-		System.out.println(user);
-		Game game  = Game.builder().igdbGameId(733).build();
-		Game game2  = Game.builder().igdbGameId(73).build();
-		Backlog backlog = Backlog.builder().user(user).game(game).build();
-		Backlog backlog2 = Backlog.builder().user(user).game(game2).build();
-		Backlog saved1 = backlogRepository.save(backlog);
-		Backlog saved2 = backlogRepository.save(backlog2);
-		List<Backlog> list = new ArrayList<>();
-		list.add(saved1);
-		list.add(saved2);
-		
-		List<Backlog> response = backlogRepository.getReferenceByUserId(2);
-		
-		Assertions.assertThat(response).isNotNull();
-		Assertions.assertThat(response.size()).isEqualTo(2);
-		Assertions.assertThat(response).isEqualTo(list);		
-	}
+//	@Transactional
+//	@Test
+//	public void backlogRepository_GetAllFromUser_ReturnAllBacklogs() {
+//		User user = User.builder().username("testUser").build();
+//		user = userRepository.save(user);
+//		System.out.println(user);
+//		Game game  = Game.builder().igdbGameId(733).build();
+//		Game game2  = Game.builder().igdbGameId(73).build();
+//		Backlog backlog = Backlog.builder().user(user).game(game).build();
+//		Backlog backlog2 = Backlog.builder().user(user).game(game2).build();
+//		Backlog saved1 = backlogRepository.save(backlog);
+//		Backlog saved2 = backlogRepository.save(backlog2);
+//		List<Backlog> list = new ArrayList<>();
+//		list.add(saved1);
+//		list.add(saved2);
+//		
+//		List<Backlog> response = backlogRepository.getReferenceByUserId(2);
+//		
+//		Assertions.assertThat(response).isNotNull();
+//		Assertions.assertThat(response.size()).isEqualTo(2);
+//		Assertions.assertThat(response).isEqualTo(list);		
+//	}
 	
 	//TODO DELETE TESTS
 

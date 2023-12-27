@@ -21,19 +21,19 @@ public class FavoriteController {
 	private FavoriteService favoriteService;
 
 	@GetMapping
-	public ResponseEntity<List<FavoritesResponseDto>> getUserFavorites(@RequestParam long userId) throws IOException{
+	public ResponseEntity<List<FavoritesResponseDto>> getUserFavorites(@RequestParam String userId) throws IOException{
 		List<FavoritesResponseDto> response  = favoriteService.getUserFavorites(userId);
 		return ResponseEntity.ok(response);
 	}
 	
 	@PostMapping
-	public ResponseEntity<FavoritesCreateDto> addFavoriteToUser(@RequestParam long userId,@RequestParam long gameId) throws Exception{
+	public ResponseEntity<FavoritesCreateDto> addFavoriteToUser(@RequestParam String userId,@RequestParam long gameId) throws Exception{
 		FavoritesCreateDto response = favoriteService.addFavoriteToUser(userId,gameId);
 		return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping("profile")
-	public ResponseEntity<List<FavoritesResponseDto>> getTop5Favorites(@RequestParam long userId) throws IOException{
+	public ResponseEntity<List<FavoritesResponseDto>> getTop5Favorites(@RequestParam String userId) throws IOException{
 		List<FavoritesResponseDto> response  = favoriteService.getUserTopFavorites(userId);
 		return ResponseEntity.ok(response);
 	}

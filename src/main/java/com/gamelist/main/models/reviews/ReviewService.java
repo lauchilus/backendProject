@@ -67,8 +67,8 @@ public class ReviewService {
 		return review;
 	}
 	
-	public List<ReviewResponseDto> getAllReviewsFromUser(long user) throws JsonMappingException, JsonProcessingException{
-		List<Review> reviews = reviewRepo.findAllByUserId(user);
+	public List<ReviewResponseDto> getAllReviewsFromUser(String userId) throws JsonMappingException, JsonProcessingException{
+		List<Review> reviews = reviewRepo.findAllByUserId(userId);
 		List<ReviewResponseDto> response = new ArrayList<>();
 		for (Review r : reviews) {
 			SearchGameListDto s = igdbService.getDataToDto(r.getGame().getIgdbGameId());
@@ -81,7 +81,7 @@ public class ReviewService {
 
 
 
-	public List<ReviewResponseDto> getTop3UserReviews(long userId) throws JsonMappingException, JsonProcessingException {
+	public List<ReviewResponseDto> getTop3UserReviews(String userId) throws JsonMappingException, JsonProcessingException {
 		List<Review> reviews = reviewRepo.findTop3ByUserIdOrderByIdDesc(userId);
 		List<ReviewResponseDto> response = new ArrayList<>();
 		for (Review r : reviews) {

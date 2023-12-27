@@ -24,16 +24,16 @@ public class BacklogController {
 	
 	
 	@PostMapping
-	public ResponseEntity<BacklogUserResponseDto> addGameToBacklog(@RequestParam long user, @RequestParam long gameId) throws JsonMappingException, JsonProcessingException {
+	public ResponseEntity<BacklogUserResponseDto> addGameToBacklog(@RequestParam String user, @RequestParam long gameId) throws JsonMappingException, JsonProcessingException {
 		BacklogUserResponseDto blg = backlogService.addGameToBacklog(user,gameId);
 		return ResponseEntity.ok(blg);
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<BacklogUserResponseDto>> getAllBacklogFromUser(@RequestParam long userId) throws JsonMappingException, JsonProcessingException{
+	public ResponseEntity<List<BacklogUserResponseDto>> getAllBacklogFromUser(@RequestParam String userId) throws JsonMappingException, JsonProcessingException{
 		List<BacklogUserResponseDto> response = backlogService.getAllBacklogsFromUser(userId);
 		return ResponseEntity.ok(response);
 	}
 	
-	//TODO DELETE ENDPOINT
+	//TODO DELETE ENDPOINT 
 }

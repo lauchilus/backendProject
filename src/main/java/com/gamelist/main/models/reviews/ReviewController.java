@@ -43,13 +43,13 @@ public class ReviewController {
 	}
 	
 	@GetMapping()
-	public ResponseEntity<List<ReviewResponseDto>> getAllUserReviews(@RequestParam long userId) throws JsonMappingException, JsonProcessingException{
+	public ResponseEntity<List<ReviewResponseDto>> getAllUserReviews(@RequestParam String userId) throws JsonMappingException, JsonProcessingException{
 		List<ReviewResponseDto> response = reviewService.getAllReviewsFromUser(userId);
 		return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping("profile")
-	public ResponseEntity<List<ReviewResponseDto>> getTop3UserReviews(@RequestParam long userId) throws JsonMappingException, JsonProcessingException{
+	public ResponseEntity<List<ReviewResponseDto>> getTop3UserReviews(@RequestParam String userId) throws JsonMappingException, JsonProcessingException{
 		List<ReviewResponseDto> response = reviewService.getTop3UserReviews(userId);
 		return ResponseEntity.ok(response);
 	}

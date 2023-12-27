@@ -29,19 +29,19 @@ public class UserController {
 	}
 	
 	@PutMapping
-	public ResponseEntity<User> updateProfile(@RequestParam long userId,@RequestBody UpdateUser update) throws IOException{
+	public ResponseEntity<User> updateProfile(@RequestParam String userId,@RequestBody UpdateUser update) throws IOException{
 		User user = userService.updateProfile(userId, update);
 		return ResponseEntity.ok(user);
 	}
 	
 	@GetMapping
-	public ResponseEntity<UserResponseDto> getUser(@RequestParam long id){
+	public ResponseEntity<UserResponseDto> getUser(@RequestParam String id){
 		UserResponseDto user = userService.getUserReference(id);
 		return ResponseEntity.ok(user);
 	}
 	
 	@GetMapping("/test")
-	public ResponseEntity test(@RequestParam long id) {
+	public ResponseEntity test(@RequestParam String id) {
 		User user  = userService.getUser(id);
 		return ResponseEntity.ok(user);
 	}

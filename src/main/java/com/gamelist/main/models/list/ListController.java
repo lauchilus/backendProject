@@ -26,14 +26,14 @@ public class ListController {
 	private ListService listService;
 	
 	@PostMapping
-	public ResponseEntity<CreateCollectionDto> createList(@RequestParam long userID, @RequestParam String name, MultipartFile image) throws IOException{
+	public ResponseEntity<CreateCollectionDto> createList(@RequestParam String userID, @RequestParam String name, MultipartFile image) throws IOException{
 		Collection collection = listService.createCollection(userID,name,image);
 		CreateCollectionDto response = new CreateCollectionDto(collection.getName(),collection.getLikes(),collection.getImageList().getImageUrl());
 		return ResponseEntity.ok(response);		
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<GetCollectionDto>> getLists(@RequestParam long userID){
+	public ResponseEntity<List<GetCollectionDto>> getLists(@RequestParam String userID){
 		List<GetCollectionDto> response = listService.getUserLists(userID);
 		return ResponseEntity.ok(response);		
 	}
