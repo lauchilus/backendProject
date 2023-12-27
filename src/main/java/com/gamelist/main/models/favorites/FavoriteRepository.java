@@ -11,9 +11,9 @@ import com.gamelist.main.models.user.User;
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
-	List<Favorite> findAllByUserId(long id);
+	List<Favorite> findAllByUserId(String id);
 	
-	List<Favorite> findTop4ByUserId(long id);
+	List<Favorite> findTop4ByUserId(String id);
 
 	boolean existsByGameAndUser(Game game, User user);
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public record UserResponseDto(
-		long id,
+		String id,
 		String username,
 		String bio,
 		String imageUrl

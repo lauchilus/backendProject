@@ -7,7 +7,7 @@ public record ReviewPostDto(
 		@NotBlank
 		String review,
 		@NotNull
-		long userId,
+		String userId,
 		@NotNull
 		float rating,
 		@NotNull

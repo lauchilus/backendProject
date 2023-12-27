@@ -1,12 +1,12 @@
 package com.gamelist.main.models.user;
 
-import java.awt.Image;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gamelist.main.auth.RegisterDto;
 import com.gamelist.main.cloudinary.CloudinaryComs;
 import com.gamelist.main.models.images.ImageRepository;
 import com.gamelist.main.models.images.Images;
@@ -40,7 +40,7 @@ public class UserService {
 	} 
 
 	@Transactional
-	public User updateProfile(long userId, UpdateUser update) throws IOException {
+	public User updateProfile(String userId, UpdateUser update) throws IOException {
 		User user = userRepo.getReferenceById(userId);
 		if(update.avatar() != null) {
 			cloudinary.delete(user.getImage().getId());
@@ -60,7 +60,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public UserResponseDto getUserReference(long id) {
+	public UserResponseDto getUserReference(String id) {
 		
 		User user = userRepo.getReferenceById(id);
 		UserResponseDto response = new UserResponseDto(user.getId(),user.getUsername(), user.getBio(), user.getImage().getImageUrl());
@@ -68,8 +68,14 @@ public class UserService {
 		return response;
 	}
 
-	public User getUser(long userId) {
+	public User getUser(String userId) {
 		User user = userRepo.getReferenceById(userId);
 		return user;
+	}
+
+	public UserResponseDto saveUser(RegisterDto register) {
+		User user = userRepo.save(new User(register.email(),register.userUID()));
+		UserResponseDto response = new UserResponseDto(user.getId(),user.getUsername(), user.getBio(), user.getImage().getImageUrl());
+		return response;
 	}
 }

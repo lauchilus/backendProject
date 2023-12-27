@@ -39,7 +39,7 @@ public class PlayedService {
 	private IgdbService igdbService;
 	 
 	@Transactional
-	public Played addPlayed(long id, long gameId) throws Exception {
+	public Played addPlayed(String id, long gameId) throws Exception {
 		User user = userService.getUser(id);
 		Game game = gameRepo.getReferenceByIgdbGameId(gameId);
 		if(game==null) {

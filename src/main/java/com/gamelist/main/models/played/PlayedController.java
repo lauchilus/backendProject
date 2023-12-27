@@ -25,7 +25,7 @@ public class PlayedController {
 	private PlayedService playedService;
 	
 	@PostMapping
-	public ResponseEntity<PlayedPostResponse> addPlayed(@RequestParam long user,@RequestParam long gameID) throws Exception{
+	public ResponseEntity<PlayedPostResponse> addPlayed(@RequestParam String user,@RequestParam long gameID) throws Exception{
 		Played played = playedService.addPlayed(user,gameID);
 		PlayedPostResponse response = new PlayedPostResponse(played.getId(), played.getGameId(), played.getFinish_date());
 		return ResponseEntity.ok(response);

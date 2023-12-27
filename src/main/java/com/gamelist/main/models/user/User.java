@@ -35,10 +35,11 @@ import lombok.NoArgsConstructor;
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private String id;
 	
 	private String username;
+	
+	private String email;
 	
 	private String bio;
 	
@@ -64,8 +65,14 @@ public class User {
 	private List<Backlog> backlog = new ArrayList<>();
 
 	public User(String username, Images image) {
+		
 		this.username = username;
 		this.image = image;
+	}
+	
+	public User(String email,String userUID) {
+		this.email = email;
+		this.id = userUID;
 	}
 
 

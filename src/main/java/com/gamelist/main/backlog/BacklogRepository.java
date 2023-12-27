@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BacklogRepository extends JpaRepository<Backlog, Long> {
 
-	List<Backlog> getReferenceByUserId(long userId);
+	List<Backlog> getReferenceByUserId(String userId);
 
 }

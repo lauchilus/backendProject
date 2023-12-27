@@ -33,7 +33,7 @@ public class BacklogService {
 	private IgdbService igdb;;
 
 	@Transactional
-	public BacklogUserResponseDto addGameToBacklog(long userId, long gameId)
+	public BacklogUserResponseDto addGameToBacklog(String userId, long gameId)
 			throws JsonMappingException, JsonProcessingException {
 		User user = userRepo.getReferenceById(userId);
 		Game game = gameRepo.getReferenceByIgdbGameId(gameId);
@@ -55,7 +55,7 @@ public class BacklogService {
 		return bs;
 	}
 
-	public List<BacklogUserResponseDto> getAllBacklogsFromUser(long userId)
+	public List<BacklogUserResponseDto> getAllBacklogsFromUser(String userId)
 			throws JsonMappingException, JsonProcessingException {
 		List<Backlog> b = backlogRepo.getReferenceByUserId(userId);
 		List<BacklogUserResponseDto> response = new ArrayList<>();

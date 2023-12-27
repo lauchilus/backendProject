@@ -53,7 +53,7 @@ public class ListService {
 	private IgdbService igdbService;
 
 	@Transactional
-	public Collection createCollection(long id, String name, MultipartFile image) throws IOException {
+	public Collection createCollection(String id, String name, MultipartFile image) throws IOException {
 		User user = userRepo.getReferenceById(id);
 		Collection col;
 		if (!image.isEmpty()) {
@@ -74,7 +74,7 @@ public class ListService {
 	}
  
 	@Transactional
-	public List<GetCollectionDto> getUserLists(long userId) {
+	public List<GetCollectionDto> getUserLists(String userId) {
 		User user = userRepo.getReferenceById(userId);
 		List<Collection> list = listRepo.findAllByUser(user);
 		List<GetCollectionDto> response = list.stream()

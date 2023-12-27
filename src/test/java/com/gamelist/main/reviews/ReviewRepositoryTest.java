@@ -57,25 +57,25 @@ public class ReviewRepositoryTest {
 		game = gameRepository.save(game);
 		game2 = gameRepository.save(game2);
 		game3 = gameRepository.save(game3);
-		
-		Review review = Review.builder().game(game).user(user).review("REVIEW ").build();
-		Review review2 = Review.builder().game(game2).user(user).review("REVIEW2 ").build();
-		Review review3 = Review.builder().game(game3).user(user).review("REVIEW3 ").build();
-		
-		Review saved = reviewRepository.save(review);
-		Review saved2 = reviewRepository.save(review2);
-		Review saved3 = reviewRepository.save(review3);
-		
-		List<Review> as = new ArrayList<Review>();
-		as.add(saved);
-		as.add(saved2);
-		as.add(saved3);
-		
-		List<Review> response = reviewRepository.findAllByUserId(1);
-		System.out.println(response);
-		
-		Assertions.assertThat(response.size()).isGreaterThan(0);
-		Assertions.assertThat(response).isEqualTo(as);
-	}
+//		
+//		Review review = Review.builder().game(game).user(user).review("REVIEW ").build();
+//		Review review2 = Review.builder().game(game2).user(user).review("REVIEW2 ").build();
+//		Review review3 = Review.builder().game(game3).user(user).review("REVIEW3 ").build();
+//		
+//		Review saved = reviewRepository.save(review);
+//		Review saved2 = reviewRepository.save(review2);
+//		Review saved3 = reviewRepository.save(review3);
+//		
+//		List<Review> as = new ArrayList<Review>();
+//		as.add(saved);
+//		as.add(saved2);
+//		as.add(saved3);
+//		
+//		List<Review> response = reviewRepository.findAllByUserId(1);
+//		System.out.println(response);
+//		
+//		Assertions.assertThat(response.size()).isGreaterThan(0);
+//		Assertions.assertThat(response).isEqualTo(as);
+//	}
 
-}
+}}

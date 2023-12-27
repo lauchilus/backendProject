@@ -42,7 +42,7 @@ public class FavoriteService {
 	@Autowired
 	private UserService userService;
 
-	public List<FavoritesResponseDto> getUserFavorites(long id) throws IOException {
+	public List<FavoritesResponseDto> getUserFavorites(String id) throws IOException {
 		List<Favorite> favorites = favoriteRepo.findAllByUserId(id);
 		List<FavoritesResponseDto> responseList = new ArrayList<>();
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -65,7 +65,7 @@ public class FavoriteService {
 	}
 
 	@Transactional
-	public FavoritesCreateDto addFavoriteToUser(long userId, long gameId) throws Exception {
+	public FavoritesCreateDto addFavoriteToUser(String userId, long gameId) throws Exception {
 		User user = userService.getUser(userId);
 		Game game = gameRepo.getReferenceByIgdbGameId(gameId);
 		if(game==null) {
@@ -82,7 +82,7 @@ public class FavoriteService {
 		return response;
 	}
 	
-	public List<FavoritesResponseDto> getUserTopFavorites(long id) throws IOException {
+	public List<FavoritesResponseDto> getUserTopFavorites(String id) throws IOException {
 		List<Favorite> favorites = favoriteRepo.findTop4ByUserId(id);
 		List<FavoritesResponseDto> responseList = new ArrayList<>();
 		ObjectMapper objectMapper = new ObjectMapper();
