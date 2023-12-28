@@ -54,7 +54,7 @@ public class PlayedService {
 	}
 
 
-	public List<PlayedResponse> getAllUserPlayed(long userid,Pageable page) throws IOException {
+	public List<PlayedResponse> getAllUserPlayed(String userid,Pageable page) throws IOException {
 		List<Played> playedList = playedRepo.findAllByUserIdOrderByIdDesc(userid,page);
 		List<PlayedResponse> responseList = new ArrayList<>();
 		ObjectMapper objectMapper = new ObjectMapper();

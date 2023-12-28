@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
+@CrossOrigin
 @RequestMapping("/user")
 public class UserController {
 
@@ -29,8 +31,9 @@ public class UserController {
 	}
 	
 	@PutMapping
-	public ResponseEntity<User> updateProfile(@RequestParam String userId,@RequestBody UpdateUser update) throws IOException{
-		User user = userService.updateProfile(userId, update);
+	public ResponseEntity<User> updateProfile(@RequestParam String userId,@RequestBody MultipartFile avatar,@RequestParam String username, @RequestParam String bio) throws IOException{
+		User user = userService.updateProfile(userId, avatar,username,bio);
+		System.out.println(avatar);
 		return ResponseEntity.ok(user);
 	}
 	

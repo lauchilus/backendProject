@@ -39,23 +39,30 @@ public class UserService {
 		return user;
 	} 
 
+	@SuppressWarnings("null")
 	@Transactional
-	public User updateProfile(String userId, UpdateUser update) throws IOException {
+	public User updateProfile(String userId, MultipartFile update,String username,String bio) throws IOException {
 		User user = userRepo.getReferenceById(userId);
-		if(update.avatar() != null) {
-			cloudinary.delete(user.getImage().getId());
-			Images image = cloudinary.upload(update.avatar());
-			imagesRepo.delete(user.getImage());
+		if(update != null) {
+			//cloudinary.delete(user.getImage().getId());
+			Images image = cloudinary.upload(update);
+			if(user.getImage() != null) {
+				imagesRepo.delete(user.getImage());
+			}
 			imagesRepo.save(image);
 			user.updateAvatar(image);
 			userRepo.save(user);
 			
 		}
 		
-		if(update.bio() != null) {
-			user.updateBio(update.bio());
+		if(bio != null || bio.isBlank()) {
+			user.updateBio(bio);
 			userRepo.save(user);
 		}
+		if((username != null || username.isBlank()) && !userRepo.existsByUsername(username)) {
+			user.setUsername(username);
+		}
+		userRepo.save(user);
 		return user;
 	}
 
@@ -73,9 +80,10 @@ public class UserService {
 		return user;
 	}
 
-	public UserResponseDto saveUser(RegisterDto register) {
+	@Transactional
+	public String saveUser(RegisterDto register) {
 		User user = userRepo.save(new User(register.email(),register.userUID()));
-		UserResponseDto response = new UserResponseDto(user.getId(),user.getUsername(), user.getBio(), user.getImage().getImageUrl());
-		return response;
+		//UserResponseDto response = new UserResponseDto(user.getId(),user.getUsername(), user.getBio(), user.getImage().getImageUrl());
+		return "Save ok";
 	}
 }

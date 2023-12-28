@@ -37,15 +37,14 @@ public class User {
 	@Id
 	private String id;
 	
-	private String username;
+	private String username = "";
 	
-	private String email;
+	private String email = "";
 	
 	private String bio;
 	
 	
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "image_id", nullable = true)
 	private Images image;
 	
 	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)

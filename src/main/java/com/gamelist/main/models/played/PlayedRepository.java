@@ -12,7 +12,7 @@ import com.gamelist.main.models.user.User;
 public interface PlayedRepository extends JpaRepository<Played, Long> {
 
 	
-	List<Played> findAllByUserIdOrderByIdDesc(long user,Pageable page);
+	List<Played> findAllByUserIdOrderByIdDesc(String user,Pageable page);
 	
 	boolean existsByGameIdAndUser(long game_id, User user);
 

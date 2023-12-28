@@ -32,7 +32,7 @@ public class PlayedController {
 	}
 	
 	@GetMapping("/{user}")
-	public ResponseEntity<List<PlayedResponse>> getAllUserPlayed(@PathVariable long user,@RequestParam int page) throws IOException{
+	public ResponseEntity<List<PlayedResponse>> getAllUserPlayed(@PathVariable String user,@RequestParam int page) throws IOException{
 		List<PlayedResponse> response = playedService.getAllUserPlayed(user,PageRequest.of(page, 2));
 		
 		return ResponseEntity.ok(response);
