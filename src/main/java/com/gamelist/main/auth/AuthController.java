@@ -7,6 +7,7 @@ import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 
 @Controller
+@CrossOrigin
 @RequestMapping("/auth")
 public class AuthController {
 	
@@ -34,10 +36,10 @@ public class AuthController {
 	}
 	
 	
-	@PostMapping("/register")
-	public ResponseEntity<UserResponseDto> register(@RequestBody RegisterDto register){
-		UserResponseDto user = userService.saveUser(register);
-		return ResponseEntity.ok(user);
+	@PostMapping("register")
+	public ResponseEntity<String> register(@RequestBody RegisterDto register){
+		String user = userService.saveUser(register);
+		return ResponseEntity.ok("save ok");
 	}
 	
 }
