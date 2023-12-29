@@ -11,7 +11,8 @@ public record ReviewResponseDto(
 		float rating,
 		String name,
 		String gameImage,
-		long gameId
+		long gameId,
+		long id
 		) {
 
 	

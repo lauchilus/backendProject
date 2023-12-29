@@ -1,13 +1,20 @@
 package com.gamelist.main.config;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@EnableWebSecurity
 public class WebSecurityConfig {
 
 	
@@ -15,11 +22,14 @@ public class WebSecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(requests ->
         requests
-        .requestMatchers("/auth/**").permitAll()
-        .requestMatchers(HttpMethod.GET).permitAll()
-        
-            .anyRequest().authenticated())
+//        .requestMatchers("/auth/**").permitAll()
+        .requestMatchers("http://localhost:4200/register").permitAll()
+        .requestMatchers(HttpMethod.GET).permitAll()        
+            .requestMatchers(HttpMethod.POST).authenticated()
+			.requestMatchers(HttpMethod.PUT).authenticated())
 			.oauth2ResourceServer(oAuth -> oAuth.jwt(Customizer.withDefaults()));
 		return http.build();
 	}
+	
+
 }

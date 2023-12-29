@@ -45,12 +45,15 @@ public class BacklogService {
 		}
 
 		// Create and save Backlog
-		Backlog backlog = backlogRepo.save(new Backlog(user, game));
+		Backlog backlog = backlogRepo.getReferenceByUserAndGame(user, game);
 		if(user.getBacklog().contains(backlog)) {
 			throw new RuntimeException("Backlog already exist!!");
 		}
+		else {
+			backlog = backlogRepo.save(new Backlog(user,game)); 
+		}
 		SearchGameListDto s = igdb.getDataToDto(backlog.getGame().getIgdbGameId());
-		BacklogUserResponseDto bs = new BacklogUserResponseDto(backlog.getId(), s);
+		BacklogUserResponseDto bs = new BacklogUserResponseDto(backlog.getId(), s.id(),s.name(),s.imageUrl());
 
 		return bs;
 	}
@@ -61,7 +64,7 @@ public class BacklogService {
 		List<BacklogUserResponseDto> response = new ArrayList<>();
 		for (Backlog back : b) {
 			SearchGameListDto s = igdb.getDataToDto(back.getGame().getIgdbGameId());
-			BacklogUserResponseDto bs = new BacklogUserResponseDto(back.getId(), s);
+			BacklogUserResponseDto bs = new BacklogUserResponseDto(back.getId(), s.id(),s.name(),s.imageUrl());
 			response.add(bs);
 		}
 

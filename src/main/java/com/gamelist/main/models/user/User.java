@@ -11,6 +11,7 @@ import com.gamelist.main.models.images.Images;
 import com.gamelist.main.models.list.Collection;
 import com.gamelist.main.models.reviews.Review;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -43,7 +44,7 @@ public class User {
 	
 	private String bio;
 	
-	
+	@Nullable
 	@OneToOne(fetch = FetchType.LAZY)
 	private Images image;
 	
@@ -69,9 +70,10 @@ public class User {
 		this.image = image;
 	}
 	
-	public User(String email,String userUID) {
+	public User(String email,String userUID,String username) {
 		this.email = email;
 		this.id = userUID;
+		this.username = username;
 	}
 
 
@@ -93,5 +95,7 @@ public class User {
 		this.favorites.add(favorite);
 		
 	}
+
+	
 
 }
