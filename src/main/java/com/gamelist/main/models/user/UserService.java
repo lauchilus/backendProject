@@ -1,5 +1,6 @@
 package com.gamelist.main.models.user;
 
+import java.awt.Image;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,8 @@ public class UserService {
 
 	//TODO EXCEPTION TRY/CATCH
 	@Transactional
-	public User createUser(String username, MultipartFile avatar) throws IOException {
-		Images image = cloudinary.upload(avatar);		
-		User user = userRepo.save(new User(username,image));		
+	public User createUser(CreateUserDto userDto) throws IOException {
+		User user = userRepo.save(new User(userDto.userUID(),userDto.email(),userDto.username()));		
 //		image.setUser(user);
 //		imagesRepo.save(image);
 		return user;
@@ -70,7 +70,14 @@ public class UserService {
 	public UserResponseDto getUserReference(String id) {
 		
 		User user = userRepo.getReferenceById(id);
-		UserResponseDto response = new UserResponseDto(user.getId(),user.getUsername(), user.getBio(), user.getImage().getImageUrl());
+		String imageUrl = ""; 
+		if(user.getImage()==null) {
+			imageUrl = "https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg";
+		}else {
+			imageUrl = user.getImage().getImageUrl();
+		}
+		
+		UserResponseDto response = new UserResponseDto(user.getId(),user.getUsername(), user.getBio(), imageUrl);
 		System.out.println(response);
 		return response;
 	}
@@ -82,8 +89,21 @@ public class UserService {
 
 	@Transactional
 	public String saveUser(RegisterDto register) {
-		User user = userRepo.save(new User(register.email(),register.userUID()));
-		//UserResponseDto response = new UserResponseDto(user.getId(),user.getUsername(), user.getBio(), user.getImage().getImageUrl());
+		if(userRepo.existsByUsername(register.username())) {
+			return "Username already exits!";
+		}
+		User user = userRepo.save(new User(register.email(),register.userUID(),register.username()));
 		return "Save ok";
+	}
+
+	public boolean existUsername(String username) {
+		boolean exist = userRepo.existsByUsername(username);
+		System.out.println(exist);
+		return exist;
+	}
+
+	public boolean verifyEmail( String email) {
+		
+		return userRepo.existsByEmail(email);
 	}
 }

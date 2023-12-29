@@ -36,10 +36,10 @@ public class ReviewController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<String> getReview(@PathVariable long id){
-		Review review = reviewService.getReview(id);
-		//ReviewResponseDto response = new ReviewResponseDto(review.getReview_date(), review.getReview(), review.getRating(), review.getGame().toString());
-		return ResponseEntity.ok("ok");
+	public ResponseEntity<ReviewResponseDto> getReview(@PathVariable long id) throws JsonMappingException, JsonProcessingException{
+		ReviewResponseDto review = reviewService.getReview(id);
+		System.out.println(review);
+		return ResponseEntity.ok(review);
 	}
 	
 	@GetMapping()

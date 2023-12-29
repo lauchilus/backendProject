@@ -6,7 +6,9 @@ public record RegisterDto(
 		@NotNull
 		String email,
 		@NotNull
-		String userUID
+		String userUID,
+		@NotNull
+		String username
 		) {
 
 }

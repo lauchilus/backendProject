@@ -9,7 +9,9 @@ import lombok.Builder;
 @Builder
 public record BacklogUserResponseDto(
 		long idBacklog,
-		SearchGameListDto game
+		long id,
+		String name,
+		String imageUrl
 		) {
 
 }

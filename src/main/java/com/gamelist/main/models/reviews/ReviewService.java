@@ -62,9 +62,11 @@ public class ReviewService {
 	
 
 	
-	public Review getReview(long id) {
+	public ReviewResponseDto getReview(long id) throws JsonMappingException, JsonProcessingException {
 		Review review  = reviewRepo.getReferenceById(id);
-		return review;
+		SearchGameListDto s = igdbService.getDataToDto(review.getGame().getIgdbGameId());
+		ReviewResponseDto rr = new ReviewResponseDto(review.getReview_date(),review.getReview(),review.getRating(),s.name(),s.imageUrl(),s.id(),review.getId());
+		return rr;
 	}
 	
 	public List<ReviewResponseDto> getAllReviewsFromUser(String userId) throws JsonMappingException, JsonProcessingException{
@@ -72,7 +74,7 @@ public class ReviewService {
 		List<ReviewResponseDto> response = new ArrayList<>();
 		for (Review r : reviews) {
 			SearchGameListDto s = igdbService.getDataToDto(r.getGame().getIgdbGameId());
-			ReviewResponseDto rr = new ReviewResponseDto(r.getReview_date(),r.getReview(),r.getRating(),s.name(),s.imageUrl(),s.id());
+			ReviewResponseDto rr = new ReviewResponseDto(r.getReview_date(),r.getReview(),r.getRating(),s.name(),s.imageUrl(),s.id(),r.getId());
 			response.add(rr);
 		}
 		
@@ -86,7 +88,7 @@ public class ReviewService {
 		List<ReviewResponseDto> response = new ArrayList<>();
 		for (Review r : reviews) {
 			SearchGameListDto s = igdbService.getDataToDto(r.getGame().getIgdbGameId());
-			ReviewResponseDto rr = new ReviewResponseDto(r.getReview_date(),r.getReview(),r.getRating(),s.name(),s.imageUrl(),s.id());
+			ReviewResponseDto rr = new ReviewResponseDto(r.getReview_date(),r.getReview(),r.getRating(),s.name(),s.imageUrl(),s.id(),r.getId());
 			response.add(rr);
 		}
 		

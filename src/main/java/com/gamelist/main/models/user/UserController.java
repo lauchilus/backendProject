@@ -24,9 +24,9 @@ public class UserController {
 	
 	
 	@PostMapping
-	public ResponseEntity<User> createUser(@RequestParam String username, MultipartFile avatar ) throws IOException{
-		User user = userService.createUser(username,avatar);
-		
+	public ResponseEntity<User> createUser(@RequestBody CreateUserDto userDto ) throws IOException{
+		User user = userService.createUser(userDto);
+		System.out.println(user+"*******************");
 		return ResponseEntity.ok(user); 
 	}
 	
@@ -47,5 +47,12 @@ public class UserController {
 	public ResponseEntity test(@RequestParam String id) {
 		User user  = userService.getUser(id);
 		return ResponseEntity.ok(user);
+	}
+	
+	@GetMapping("/verify")
+	public ResponseEntity<?> verifyUsername(@RequestParam String username){
+		boolean exist = userService.existUsername(username);
+		System.out.println(username);
+		return ResponseEntity.ok(exist);
 	}
 }
