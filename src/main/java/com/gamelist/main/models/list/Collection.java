@@ -8,6 +8,7 @@ import com.gamelist.main.models.images.Images;
 import com.gamelist.main.models.listGames.ListGames;
 import com.gamelist.main.models.user.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -47,8 +48,8 @@ public class Collection {
 
 	private long likes = 1;
 	
-	@OneToMany(mappedBy = "collection",fetch = FetchType.LAZY)
-	private List<ListGames> gamesList = new ArrayList<>();
+	@OneToMany(mappedBy = "collection",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	private List<ListGames> gamesList;
 	
 	
 

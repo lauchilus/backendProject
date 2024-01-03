@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.api.igdb.utils.ImageBuilderKt;
 import com.api.igdb.utils.ImageSize;
 import com.api.igdb.utils.ImageType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gamelist.main.igbd.CoverGame;
 import com.gamelist.main.igbd.IgdbService;
@@ -41,15 +43,31 @@ public class FavoriteService {
 	
 	@Autowired
 	private UserService userService;
+	
+	private ObjectMapper objectMapper;
+	 
+	private IgdbHelpers igdbHelpers;
+
+	
+	
+	public FavoriteService(FavoriteRepository favoriteRepo, GameRepository gameRepo, UserRepository userRepo,
+			IgdbService igdbService, UserService userService,ObjectMapper objectMapper,IgdbHelpers igdbHelpers) {
+		super();
+		this.favoriteRepo = favoriteRepo;
+		this.gameRepo = gameRepo;
+		this.userRepo = userRepo;
+		this.igdbService = igdbService;
+		this.userService = userService;
+		this.objectMapper = objectMapper;
+		this.igdbHelpers = igdbHelpers;
+	}
 
 	public List<FavoritesResponseDto> getUserFavorites(String id) throws IOException {
 		List<Favorite> favorites = favoriteRepo.findAllByUserId(id);
 		List<FavoritesResponseDto> responseList = new ArrayList<>();
-		ObjectMapper objectMapper = new ObjectMapper();
 		for (Favorite favorite : favorites) {
 			String res = igdbService.searchGameByIdToList(favorite.getGame().getIgdbGameId());
-			GameListData[] data = objectMapper.readValue(res, GameListData[].class);
-			GameListData dat = data[0];
+			GameListData dat = getGamelistDataFromService(res);
 			String image = getImageResponse(dat.getCover());
 			FavoritesResponseDto resp = new FavoritesResponseDto(favorite.getId(),favorite.getGame().getIgdbGameId(),dat.getName(),image);
 			responseList.add(resp);
@@ -59,9 +77,13 @@ public class FavoriteService {
 	
 	public String getImageResponse(CoverGame data) throws IOException {
 		String ss = data.getImage_id();
-		String imageUrl = ImageBuilderKt.imageBuilder(ss, ImageSize.COVER_BIG, ImageType.PNG);
+		String imageUrl = imageBuilder(ss);
 		
 		return imageUrl;
+	}
+
+	public String imageBuilder(String ss) {
+		return igdbHelpers.imageBuilder(ss);
 	}
 
 	@Transactional
@@ -72,31 +94,47 @@ public class FavoriteService {
 			game = gameRepo.save(new Game(gameId));
 		}
 		if(favoriteRepo.existsByGameAndUser(game,user)) {
-			throw new Exception("Game already in list!");
+			throw new RuntimeException("Game already in list!");
+		}else {
+			Favorite fav = favoriteRepo.save(new Favorite(game,user));
+			
+			user.addFavorite(fav);
+			userRepo.save(user);
+			FavoritesCreateDto response = new FavoritesCreateDto(fav.getId(), fav.getGame().getIgdbGameId());
+			return response;
 		}
-		Favorite fav = favoriteRepo.save(new Favorite(game,user));
 		
-		user.addFavorite(fav);
-		userRepo.save(user);
-		FavoritesCreateDto response = new FavoritesCreateDto(fav.getId(), fav.getGame().getIgdbGameId());
-		return response;
+		
 	}
 	
 	public List<FavoritesResponseDto> getUserTopFavorites(String id) throws IOException {
 		List<Favorite> favorites = favoriteRepo.findTop4ByUserId(id);
 		List<FavoritesResponseDto> responseList = new ArrayList<>();
-		ObjectMapper objectMapper = new ObjectMapper();
 		for (Favorite favorite : favorites) {
 			String res = igdbService.searchGameByIdToList(favorite.getGame().getIgdbGameId());
-			GameListData[] data = objectMapper.readValue(res, GameListData[].class);
-			GameListData dat = data[0];
+			System.out.println(res);
+			GameListData dat = getGamelistDataFromService(res);
 			String image = getImageResponse(dat.getCover());
-			FavoritesResponseDto resp = new FavoritesResponseDto(favorite.getId(),favorite.getGame().getIgdbGameId(),dat.getName(),image);
+			FavoritesResponseDto resp = new FavoritesResponseDto(favorite.getId(),
+					favorite.getGame().getIgdbGameId(),dat.getName(),image);
 			responseList.add(resp);
-		}
+		} 
 		return responseList;
 	}
+
+	public GameListData getGamelistDataFromService(String res)
+			throws JsonProcessingException, JsonMappingException {
+		if(objectMapper != null) {
+		System.out.println(res+"oooo************");
+		GameListData[] data = this.objectMapper.readValue(res, GameListData[].class);
+		GameListData dat = data[0];
+		return dat;
+		}
+		else {
+			throw new RuntimeException();
+		}
+	}
 	
-	
+	 
 	
 }

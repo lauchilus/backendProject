@@ -1,26 +1,37 @@
 package com.gamelist.main.backlog;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.assertj.core.api.Assertions;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.gamelist.main.igbd.IgdbService;
 import com.gamelist.main.igbd.SearchGameListDto;
 import com.gamelist.main.models.game.Game;
 import com.gamelist.main.models.game.GameRepository;
 import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 
-@ExtendWith(MockitoExtension.class)
+//@ExtendWith(MockitoExtension.class)
 public class BacklogServiceTest {
 
+	@InjectMocks
+	private BacklogService backlogService;
+	
 	@Mock
 	private BacklogRepository backlogRepository;
 	
@@ -29,25 +40,59 @@ public class BacklogServiceTest {
 	
 	@Mock
 	private GameRepository gameRepository;
+
+	@Mock
+	private IgdbService igdb;
+
+	@BeforeEach
+	void setUp() {
+		
+		MockitoAnnotations.openMocks(this);
+		backlogService = new BacklogService(backlogRepository,userRepository,gameRepository,igdb);
+		
+	}
 	
-	@InjectMocks
-	private BacklogService backlogService;
+	@Test
+	public void shouldReturnBacklogResponseDto() throws JsonMappingException, JsonProcessingException {
+		User user = User.builder().id("testId").email("test@email.com").username("testUsername").backlog(new ArrayList<Backlog>()).build();
+		Game game = Game.builder().id(1l).igdbGameId(71).build();
+		SearchGameListDto searchGameMock = new SearchGameListDto(71, "test Game" , "imageUrl.com");
+		Backlog backlogMock = Backlog.builder().id(1).user(user).game(game).build();
+		BacklogUserResponseDto responseExpected = new BacklogUserResponseDto(1,71,"test Game" , "imageUrl.com");
+		
+		
+		when(userRepository.getReferenceById("testId")).thenReturn(user);
+		when(gameRepository.getReferenceById(any())).thenReturn(game);
+		when(backlogRepository.getReferenceByUserAndGame(user, game)).thenReturn(backlogMock);
+		when(igdb.getDataToDto(game.getIgdbGameId())).thenReturn(searchGameMock);
+		when(backlogRepository.save(any())).thenReturn(backlogMock);
+		BacklogUserResponseDto backlog = backlogService.addGameToBacklog("first", 71);
+		 
+		verify(backlogRepository,times(1)).save(any(Backlog.class));
+		
+		assertNotNull(backlog);
+		assertEquals(backlog, responseExpected);
+	}
 	
-//	@Test
-//	public void backlogService_addGameToBacklog_ReturnBacklog() throws JsonMappingException, JsonProcessingException {
-//		User user = User.builder().id(1l).username("testUser").build();
-//		Game game  = Game.builder().id(1).igdbGameId(733).build();
-//		Backlog backlog = Backlog.builder().user(user).game(game).build();
-//		BacklogUserResponseDto response = BacklogUserResponseDto.builder().idBacklog(1).game(new SearchGameListDto(1,"testing game","testingUrl.com")).build();
-//		
-//		
-//		when(userRepository.getReferenceById(Mockito.any(Long.class))).thenReturn(user);
-//		when(gameRepository.getReferenceByIgdbGameId(Mockito.any(Long.class))).thenReturn(game);
-//		when(backlogRepository.save(Mockito.any(Backlog.class))).thenReturn(backlog);
-//		//when(backlogService.addGameToBacklog(Mockito.any(Long.class), Mockito.any(Long.class))).thenReturn(response);
-//		BacklogUserResponseDto savedBacklog = backlogService.addGameToBacklog(1, 724);
-//		
-//		Assertions.assertThat(savedBacklog).isNotNull();		
-//	}
-//	
+	@Test
+	public void shouldReturnAllBacklogsFromUser() throws JsonMappingException, JsonProcessingException {
+		List<Backlog> backlogs = new ArrayList<>();
+		User user = User.builder().id("testId").email("test@email.com").username("testUsername").backlog(new ArrayList<Backlog>()).build();
+		Game game = Game.builder().id(1l).igdbGameId(71).build();
+		backlogs.add(Backlog.builder().id(1).user(user).game(game).build());
+		SearchGameListDto searchGameMock = new SearchGameListDto(71, "test Game" , "imageUrl.com");
+		
+		when(backlogRepository.getReferenceByUserId(user.getId())).thenReturn(backlogs);
+		when(igdb.getDataToDto(game.getIgdbGameId())).thenReturn(searchGameMock);
+		
+		List<BacklogUserResponseDto> response = backlogService.getAllBacklogsFromUser("testId");
+		
+		verify(backlogRepository,times(1)).getReferenceByUserId(user.getId());
+		
+		assertNotNull(response);
+		assertEquals(backlogs.size(), response.size());
+		 
+	} 
+	
+
 }

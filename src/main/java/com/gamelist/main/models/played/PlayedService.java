@@ -11,9 +11,12 @@ import org.springframework.stereotype.Service;
 import com.api.igdb.utils.ImageBuilderKt;
 import com.api.igdb.utils.ImageSize;
 import com.api.igdb.utils.ImageType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gamelist.main.igbd.CoverGame;
 import com.gamelist.main.igbd.IgdbService;
+import com.gamelist.main.models.favorites.IgdbHelpers;
 import com.gamelist.main.models.game.Game;
 import com.gamelist.main.models.game.GameRepository;
 import com.gamelist.main.models.list.GameListData;
@@ -37,7 +40,25 @@ public class PlayedService {
 	
 	@Autowired
 	private IgdbService igdbService;
+	
+	private ObjectMapper objectMapper;
+	
+	private IgdbHelpers igdbHelpers;
+	
+	
 	 
+	public PlayedService(PlayedRepository playedRepo, GameRepository gameRepo, UserService userService,
+			IgdbService igdbService, ObjectMapper objectMapper, IgdbHelpers igdbHelpers) {
+		super();
+		this.playedRepo = playedRepo;
+		this.gameRepo = gameRepo;
+		this.userService = userService;
+		this.igdbService = igdbService;
+		this.objectMapper = objectMapper;
+		this.igdbHelpers = igdbHelpers;
+	}
+
+
 	@Transactional
 	public Played addPlayed(String id, long gameId) throws Exception {
 		User user = userService.getUser(id);
@@ -60,8 +81,7 @@ public class PlayedService {
 		ObjectMapper objectMapper = new ObjectMapper();
 		for (Played p : playedList) {
 			String res = igdbService.searchGameByIdToList(p.getGameId());
-			GameListData[] data = objectMapper.readValue(res, GameListData[].class);
-			GameListData dat = data[0];
+			GameListData dat = getGamelistDataFromService(res);
 			String image = getImageResponse(dat.getCover());
 			PlayedResponse resp = new PlayedResponse(p.getId(),p.getGameId(),p.getFinish_date(),image);
 			responseList.add(resp);
@@ -69,13 +89,27 @@ public class PlayedService {
 		return responseList;
 	}
 	
+	
 	public String getImageResponse(CoverGame data) throws IOException {
 		String ss = data.getImage_id();
-		String imageUrl = ImageBuilderKt.imageBuilder(ss, ImageSize.COVER_BIG, ImageType.PNG);
+		String imageUrl = igdbHelpers.imageBuilder(ss);
 		
 		return imageUrl;
 	}
 	
+	
+	public GameListData getGamelistDataFromService(String res)
+			throws JsonProcessingException, JsonMappingException {
+		if(objectMapper != null) {
+		System.out.println(res+"oooo************");
+		GameListData[] data = this.objectMapper.readValue(res, GameListData[].class);
+		GameListData dat = data[0];
+		return dat;
+		}
+		else {
+			throw new RuntimeException();
+		}
+	}
 	
 	
 }

@@ -151,7 +151,7 @@ public class IgdbService {
 		String requestBody = apiCalypse.buildQuery();
 		ResponseEntity<String> response = callEndpointGames(requestBody);
 		return response.getBody().toString();
-	}
+	} 
 	
 	public String searchGameByIdToListDto(long id) throws IOException {
 		APICalypse apiCalypse = new APICalypse().fields("name,,cover.image_id").where("id=" + id);
@@ -208,7 +208,7 @@ public class IgdbService {
 		ResponseEntity<String> response = callEndpointGames(requestBody);
 
 		ObjectMapper objectMapper = new ObjectMapper();
-		JsonNode jsonNode = objectMapper.readTree(response.getBody());
+		JsonNode jsonNode = objectMapper.readTree(response.getBody()); 
 
 		String a = getImageGameUrl(jsonNode.get(0).get("cover").get("image_id").asText());
 		String image = a;
