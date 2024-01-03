@@ -30,14 +30,24 @@ public class BacklogService {
 	private GameRepository gameRepo;
 
 	@Autowired
-	private IgdbService igdb;;
+	private IgdbService igdb;
+
+	
+	
+	public BacklogService(BacklogRepository backlogRepo, UserRepository userRepo, GameRepository gameRepo,
+			IgdbService igdb) {
+		super();
+		this.backlogRepo = backlogRepo;
+		this.userRepo = userRepo;
+		this.gameRepo = gameRepo;
+		this.igdb = igdb;
+	}
 
 	@Transactional
 	public BacklogUserResponseDto addGameToBacklog(String userId, long gameId)
 			throws JsonMappingException, JsonProcessingException {
 		User user = userRepo.getReferenceById(userId);
 		Game game = gameRepo.getReferenceByIgdbGameId(gameId);
-		System.out.println(game);
 		if (game == null) {
 			// Create a new Game if it doesn't exist
 			game = gameRepo.save(new Game(gameId));
@@ -46,7 +56,7 @@ public class BacklogService {
 
 		// Create and save Backlog
 		Backlog backlog = backlogRepo.getReferenceByUserAndGame(user, game);
-		if(user.getBacklog().contains(backlog)) {
+		if(user!= null && user.getBacklog().contains(backlog) && user.getBacklog() != null) {
 			throw new RuntimeException("Backlog already exist!!");
 		}
 		else {
@@ -54,7 +64,7 @@ public class BacklogService {
 		}
 		SearchGameListDto s = igdb.getDataToDto(backlog.getGame().getIgdbGameId());
 		BacklogUserResponseDto bs = new BacklogUserResponseDto(backlog.getId(), s.id(),s.name(),s.imageUrl());
-
+ 
 		return bs;
 	}
 

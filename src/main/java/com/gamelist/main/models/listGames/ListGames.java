@@ -17,8 +17,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @Builder
+@Data
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "list_games")

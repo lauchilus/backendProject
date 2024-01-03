@@ -2,7 +2,6 @@ package com.gamelist.main.models.list;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,14 +12,15 @@ import org.springframework.web.multipart.MultipartFile;
 import com.api.igdb.utils.ImageBuilderKt;
 import com.api.igdb.utils.ImageSize;
 import com.api.igdb.utils.ImageType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gamelist.main.cloudinary.CloudinaryComs;
 import com.gamelist.main.igbd.GameData;
 import com.gamelist.main.igbd.IgdbService;
 import com.gamelist.main.igbd.SearchGameListDto;
 import com.gamelist.main.igbd.SearchResponseDto;
-import com.gamelist.main.models.favorites.Favorite;
-import com.gamelist.main.models.favorites.FavoritesResponseDto;
+import com.gamelist.main.models.favorites.IgdbHelpers;
 import com.gamelist.main.models.game.Game;
 import com.gamelist.main.models.game.GameRepository;
 import com.gamelist.main.models.images.Images;
@@ -45,12 +45,31 @@ public class ListService {
 
 	@Autowired
 	private CloudinaryComs cloudinary;
-
+ 
 	@Autowired
 	private ListRepository listRepo;
 
 	@Autowired
 	private IgdbService igdbService;
+	
+	private IgdbHelpers igdbHelpers;
+	
+	private ObjectMapper objectMapper;
+	
+	
+
+	public ListService(UserRepository userRepo, GameRepository gameRepo, ListGamesRepository listGamesRepo,
+			CloudinaryComs cloudinary, ListRepository listRepo, IgdbService igdbService, ObjectMapper objectMapper,IgdbHelpers igdbHelpers) {
+		super();
+		this.userRepo = userRepo;
+		this.gameRepo = gameRepo;
+		this.listGamesRepo = listGamesRepo;
+		this.cloudinary = cloudinary;
+		this.listRepo = listRepo;
+		this.igdbService = igdbService;
+		this.objectMapper = objectMapper;
+		this.igdbHelpers = igdbHelpers;
+	}
 
 	@Transactional
 	public Collection createCollection(String id, String name, MultipartFile image) throws IOException {
@@ -68,7 +87,7 @@ public class ListService {
 		return col;
 	}
 
-	private Collection addCollectionToDB(Collection c) {
+	public Collection addCollectionToDB(Collection c) {
 		Collection col = listRepo.save(c);
 		return col;
 	}
@@ -78,8 +97,7 @@ public class ListService {
 		User user = userRepo.getReferenceById(userId);
 		List<Collection> list = listRepo.findAllByUser(user);
 		List<GetCollectionDto> response = list.stream()
-				.map((Collection collection) -> new GetCollectionDto(collection.getId(), collection.getName(),
-						collection.getImageList().getImageUrl(), collection.getLikes()))
+				.map((Collection collection) -> new GetCollectionDto(collection.getId(), collection.getName(),collection.getImageList().getImageUrl(), collection.getLikes()))
 				.collect(Collectors.toList());
 		return response;
 	}
@@ -106,8 +124,7 @@ public class ListService {
 		ObjectMapper objectMapper = new ObjectMapper();
 		for (ListGames game : listGames) {
 			String res = igdbService.searchGameByIdToList(game.getGame().getIgdbGameId());
-			GameListData[] data = objectMapper.readValue(res, GameListData[].class);
-			GameListData dat = data[0];
+			GameListData dat = getGamelistDataFromService(res);
 			String image = getImageResponse(dat.getCover());
 			SearchGameListDto resp = new SearchGameListDto(dat.getId(),dat.getName(),image);
 			responseList.add(resp);
@@ -141,8 +158,21 @@ public class ListService {
 
 	public String getImageResponse(com.gamelist.main.igbd.CoverGame data) throws IOException {
 		String ss = data.getImage_id();
-		String imageUrl = ImageBuilderKt.imageBuilder(ss, ImageSize.COVER_BIG, ImageType.PNG);
+		String imageUrl = igdbHelpers.imageBuilder(ss);
 		return imageUrl;
+	}
+	
+	public GameListData getGamelistDataFromService(String res)
+			throws JsonProcessingException, JsonMappingException {
+		if(objectMapper != null) {
+		System.out.println(res+"oooo************");
+		GameListData[] data = this.objectMapper.readValue(res, GameListData[].class);
+		GameListData dat = data[0];
+		return dat;
+		}
+		else {
+			throw new RuntimeException();
+		}
 	}
 
 }
