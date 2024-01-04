@@ -3,6 +3,8 @@ package com.gamelist.main.backlog;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,13 +28,13 @@ public class BacklogController {
 	@PostMapping
 	public ResponseEntity<BacklogUserResponseDto> addGameToBacklog(@RequestParam String user, @RequestParam long gameId) throws JsonMappingException, JsonProcessingException {
 		BacklogUserResponseDto blg = backlogService.addGameToBacklog(user,gameId);
-		return ResponseEntity.ok(blg);
+		return ResponseEntity.status(HttpStatus.CREATED).body(blg);
 	}
 	
 	@GetMapping
 	public ResponseEntity<List<BacklogUserResponseDto>> getAllBacklogFromUser(@RequestParam String userId) throws JsonMappingException, JsonProcessingException{
 		List<BacklogUserResponseDto> response = backlogService.getAllBacklogsFromUser(userId);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	//TODO DELETE ENDPOINT 

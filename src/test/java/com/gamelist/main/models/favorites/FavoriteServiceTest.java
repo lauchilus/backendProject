@@ -21,6 +21,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestPropertySource;
 
 import com.api.igdb.utils.ImageBuilderKt;
 import com.api.igdb.utils.ImageSize;
@@ -35,6 +37,11 @@ import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 import com.gamelist.main.models.user.UserService;
 
+import jakarta.transaction.Transactional;
+
+@TestPropertySource("classpath:application-test.properties")
+@Transactional
+@Rollback
 class FavoriteServiceTest {
 
 	@InjectMocks
@@ -80,7 +87,7 @@ class FavoriteServiceTest {
 		when(userService.getUser(any())).thenReturn(user);
 		when(gameRepo.getReferenceById(game.getId())).thenReturn(game);
 		when(favoriteRepo.save(any())).thenReturn(favorite);
-
+		when(userRepo.existsById(anyString())).thenReturn(true);
 		FavoritesCreateDto favoriteServiceResponse = favoriteService.addFavoriteToUser(user.getId(),
 				game.getIgdbGameId());
 
@@ -111,7 +118,7 @@ class FavoriteServiceTest {
 		when(igdb.searchGameByIdToList(anyLong())).thenReturn(responseIgdbService);
 		when(objectMapper.readValue(anyString(), eq(GameListData[].class))).thenReturn(new GameListData[] { gmd });
 		when(igdbHelpers.imageBuilder(anyString())).thenReturn("testUrl.com");
-
+		when(userRepo.existsById(anyString())).thenReturn(true);
 		List<FavoritesResponseDto> responseListService = favoriteService.getUserTopFavorites("testId");
 
 		assertNotNull(responseListService);
@@ -130,13 +137,16 @@ class FavoriteServiceTest {
 		when(userService.getUser(anyString())).thenReturn(user);
 		when(gameRepo.save(any(Game.class))).thenReturn(game);
 		when(favoriteRepo.existsByGameAndUser(any(Game.class), any(User.class))).thenReturn(true);
+		when(userRepo.existsById(anyString())).thenReturn(true);
+		when(favoriteRepo.existsByGameAndUser(any(),any())).thenReturn(true);
+		when(favoriteRepo.save(any())).thenReturn(favorite);
 
 		Exception exception = assertThrows(RuntimeException.class, () -> {
-	        favoriteService.addFavoriteToUser("testUserId", 1);
+	        favoriteService.addFavoriteToUser("testUserId", 71);
 	    });
 		
-		assertEquals("Game already in list!", exception.getMessage());
+		assertEquals("Game already in favorites!", exception.getMessage());
 
-	}
+	} 
 
 }

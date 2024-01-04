@@ -3,6 +3,7 @@ package com.gamelist.main.backlog;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -10,12 +11,13 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestPropertySource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -26,7 +28,11 @@ import com.gamelist.main.models.game.GameRepository;
 import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 
-//@ExtendWith(MockitoExtension.class)
+import jakarta.transaction.Transactional;
+
+@TestPropertySource("classpath:application-test.properties")
+@Transactional
+@Rollback
 public class BacklogServiceTest {
 
 	@InjectMocks
@@ -66,6 +72,7 @@ public class BacklogServiceTest {
 		when(backlogRepository.getReferenceByUserAndGame(user, game)).thenReturn(backlogMock);
 		when(igdb.getDataToDto(game.getIgdbGameId())).thenReturn(searchGameMock);
 		when(backlogRepository.save(any())).thenReturn(backlogMock);
+		when(userRepository.existsById(anyString())).thenReturn(true);
 		BacklogUserResponseDto backlog = backlogService.addGameToBacklog("first", 71);
 		 
 		verify(backlogRepository,times(1)).save(any(Backlog.class));
@@ -84,7 +91,7 @@ public class BacklogServiceTest {
 		
 		when(backlogRepository.getReferenceByUserId(user.getId())).thenReturn(backlogs);
 		when(igdb.getDataToDto(game.getIgdbGameId())).thenReturn(searchGameMock);
-		
+		when(userRepository.existsById(anyString())).thenReturn(true);
 		List<BacklogUserResponseDto> response = backlogService.getAllBacklogsFromUser("testId");
 		
 		verify(backlogRepository,times(1)).getReferenceByUserId(user.getId());

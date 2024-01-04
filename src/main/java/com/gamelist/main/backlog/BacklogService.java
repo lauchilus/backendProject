@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,6 +17,7 @@ import com.gamelist.main.models.game.GameRepository;
 import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 
+import exceptions.PersonalizedExceptions;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -46,6 +49,9 @@ public class BacklogService {
 	@Transactional
 	public BacklogUserResponseDto addGameToBacklog(String userId, long gameId)
 			throws JsonMappingException, JsonProcessingException {
+		if(!userRepo.existsById(userId)) {
+			throw new PersonalizedExceptions("User not found");
+		}
 		User user = userRepo.getReferenceById(userId);
 		Game game = gameRepo.getReferenceByIgdbGameId(gameId);
 		if (game == null) {
@@ -70,6 +76,9 @@ public class BacklogService {
 
 	public List<BacklogUserResponseDto> getAllBacklogsFromUser(String userId)
 			throws JsonMappingException, JsonProcessingException {
+		if(!userRepo.existsById(userId)) {
+			throw new PersonalizedExceptions("User not found");
+		}
 		List<Backlog> b = backlogRepo.getReferenceByUserId(userId);
 		List<BacklogUserResponseDto> response = new ArrayList<>();
 		for (Backlog back : b) {

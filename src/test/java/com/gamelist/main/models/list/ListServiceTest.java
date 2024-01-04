@@ -23,6 +23,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +43,11 @@ import com.gamelist.main.models.listGames.ListGamesRepository;
 import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 
+import jakarta.transaction.Transactional;
+
+@TestPropertySource("classpath:application-test.properties")
+@Transactional
+@Rollback
 class ListServiceTest {
 
 	@InjectMocks
