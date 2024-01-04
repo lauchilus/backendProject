@@ -19,6 +19,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestPropertySource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -33,6 +35,11 @@ import com.gamelist.main.models.played.PlayedRepository;
 import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 
+import jakarta.transaction.Transactional;
+
+@TestPropertySource("classpath:application-test.properties")
+@Transactional
+@Rollback
 class ReviewServiceTest {
 
 	@InjectMocks

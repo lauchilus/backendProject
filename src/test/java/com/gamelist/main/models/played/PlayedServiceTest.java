@@ -23,6 +23,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestPropertySource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gamelist.main.igbd.CoverGame;
@@ -37,6 +39,11 @@ import com.gamelist.main.models.list.GameListData;
 import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserService;
 
+import jakarta.transaction.Transactional;
+
+@TestPropertySource("classpath:application-test.properties")
+@Transactional
+@Rollback
 class PlayedServiceTest {
 	
 	@InjectMocks

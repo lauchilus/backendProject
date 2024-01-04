@@ -22,6 +22,7 @@ import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 import com.gamelist.main.models.user.UserService;
 
+import exceptions.PersonalizedExceptions;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -60,9 +61,12 @@ public class FavoriteService {
 		this.userService = userService;
 		this.objectMapper = objectMapper;
 		this.igdbHelpers = igdbHelpers;
-	}
+	} 
 
 	public List<FavoritesResponseDto> getUserFavorites(String id) throws IOException {
+		if(!userRepo.existsById(id)) {
+			throw new PersonalizedExceptions("user not found.");
+		}
 		List<Favorite> favorites = favoriteRepo.findAllByUserId(id);
 		List<FavoritesResponseDto> responseList = new ArrayList<>();
 		for (Favorite favorite : favorites) {
@@ -88,13 +92,16 @@ public class FavoriteService {
 
 	@Transactional
 	public FavoritesCreateDto addFavoriteToUser(String userId, long gameId) throws Exception {
+		if(!userRepo.existsById(userId)) {
+			throw new PersonalizedExceptions("user not found.");
+		}
 		User user = userService.getUser(userId);
 		Game game = gameRepo.getReferenceByIgdbGameId(gameId);
 		if(game==null) {
 			game = gameRepo.save(new Game(gameId));
 		}
 		if(favoriteRepo.existsByGameAndUser(game,user)) {
-			throw new RuntimeException("Game already in list!");
+			throw new PersonalizedExceptions("Game already in favorites!");
 		}else {
 			Favorite fav = favoriteRepo.save(new Favorite(game,user));
 			
@@ -108,6 +115,9 @@ public class FavoriteService {
 	}
 	
 	public List<FavoritesResponseDto> getUserTopFavorites(String id) throws IOException {
+		if(!userRepo.existsById(id)) {
+			throw new PersonalizedExceptions("user not found.");
+		}
 		List<Favorite> favorites = favoriteRepo.findTop4ByUserId(id);
 		List<FavoritesResponseDto> responseList = new ArrayList<>();
 		for (Favorite favorite : favorites) {
@@ -118,7 +128,7 @@ public class FavoriteService {
 			FavoritesResponseDto resp = new FavoritesResponseDto(favorite.getId(),
 					favorite.getGame().getIgdbGameId(),dat.getName(),image);
 			responseList.add(resp);
-		} 
+		}  
 		return responseList;
 	}
 
