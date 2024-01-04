@@ -22,7 +22,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class ReviewService {
-
+ 
 	@Autowired
 	private ReviewRepository reviewRepo;
 	
@@ -38,11 +38,25 @@ public class ReviewService {
 	@Autowired
 	private IgdbService igdbService;
 	
+	
+	
+	
+	public ReviewService(ReviewRepository reviewRepo, UserRepository userRepo, GameRepository gameRepo,
+			PlayedRepository playedRepo, IgdbService igdbService) {
+		super();
+		this.reviewRepo = reviewRepo;
+		this.userRepo = userRepo;
+		this.gameRepo = gameRepo;
+		this.playedRepo = playedRepo;
+		this.igdbService = igdbService;
+	}
+
+
+
 	@Transactional
 	public Review create(ReviewPostDto reviewPost) {
 		User user = userRepo.getReferenceById(reviewPost.userId());
 		Game game = gameRepo.getReferenceByIgdbGameId(reviewPost.gameId());
-		
 		if(reviewRepo.existsByGameAndUser(game, user)) {
 			throw new RuntimeException("You already review this game!");
 		}
@@ -56,10 +70,9 @@ public class ReviewService {
 		}
 		Played played = playedRepo.save(new Played(user,game.getId()));
 		Review review = reviewRepo.save(new Review(user,reviewPost.review(),game,reviewPost.rating()));
-		
 		return review;
 	}
-	
+	 
 
 	
 	public ReviewResponseDto getReview(long id) throws JsonMappingException, JsonProcessingException {
