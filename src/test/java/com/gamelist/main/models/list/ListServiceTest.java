@@ -98,9 +98,9 @@ class ListServiceTest {
 		when(listRepo.save(any(Collection.class))).thenReturn(collectionExpected);
 		when(listService.addCollectionToDB(any(Collection.class))).thenReturn(collectionExpected);
 		when(userRepo.save(any(User.class))).thenReturn(user);
-		
+		when(userRepo.existsById(anyString())).thenReturn(true);
 		Collection colecctionResponse = listService.createCollection(user.getId(), collectionExpected.getName(), file);
-		
+		 
 		assertNotNull(colecctionResponse);
 		assertEquals(collectionExpected, colecctionResponse);
 	}
@@ -120,6 +120,7 @@ class ListServiceTest {
 				.collect(Collectors.toList());
 		
 		when(userRepo.getReferenceById(anyString())).thenReturn(user);
+		when(userRepo.existsById(anyString())).thenReturn(true);
 		when(listRepo.findAllByUser(any(User.class))).thenReturn(lists);
 		
 		List<GetCollectionDto> responseService = listService.getUserLists(user.getId());
@@ -146,7 +147,7 @@ class ListServiceTest {
 		when(listGamesRepo.save(any(ListGames.class))).thenReturn(listGames);
 		when(listRepo.save(any(Collection.class))).thenReturn(collectionExpected);
 		
-		String responseService = listService.addGameToCollection(1, 712, 1);
+		String responseService = listService.addGameToCollection(712, 1);
 		String responseExpected = "Game Added";
 		
 		

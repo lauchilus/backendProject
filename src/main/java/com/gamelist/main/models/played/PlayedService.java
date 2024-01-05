@@ -21,6 +21,7 @@ import com.gamelist.main.models.game.Game;
 import com.gamelist.main.models.game.GameRepository;
 import com.gamelist.main.models.list.GameListData;
 import com.gamelist.main.models.user.User;
+import com.gamelist.main.models.user.UserRepository;
 import com.gamelist.main.models.user.UserService;
 
 import jakarta.transaction.Transactional;
