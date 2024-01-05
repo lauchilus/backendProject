@@ -77,6 +77,7 @@ class ReviewServiceTest {
 		ReviewPostDto reviewPost = new ReviewPostDto("Review tes", "testId", 3, 71);
 
 		when(userRepo.getReferenceById(anyString())).thenReturn(user);
+		when(userRepo.existsById(anyString())).thenReturn(true);
 		when(gameRepo.getReferenceByIgdbGameId(anyLong())).thenReturn(game);
 		when(reviewRepo.save(any(Review.class))).thenReturn(reviewExpected);
 		when(gameRepo.save(any(Game.class))).thenReturn(game);
@@ -100,7 +101,9 @@ class ReviewServiceTest {
 				1);
 
 		when(reviewRepo.getReferenceById(anyLong())).thenReturn(review);
+		when(reviewRepo.existsById(anyLong())).thenReturn(true);
 		when(igdbService.getDataToDto(anyLong())).thenReturn(searchDto);
+		when(userRepo.existsById(anyString())).thenReturn(true);
 
 		ReviewResponseDto reviewResponseService = reviewService.getReview(anyLong());
 

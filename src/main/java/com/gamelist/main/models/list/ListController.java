@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,25 +30,25 @@ public class ListController {
 	public ResponseEntity<CreateCollectionDto> createList(@RequestParam String userID, @RequestParam String name, MultipartFile image) throws IOException{
 		Collection collection = listService.createCollection(userID,name,image);
 		CreateCollectionDto response = new CreateCollectionDto(collection.getName(),collection.getLikes(),collection.getImageList().getImageUrl());
-		return ResponseEntity.ok(response);		
+		return ResponseEntity.status(HttpStatus.OK).body(response);	
 	}
 	
 	@GetMapping
 	public ResponseEntity<List<GetCollectionDto>> getLists(@RequestParam String userID){
 		List<GetCollectionDto> response = listService.getUserLists(userID);
-		return ResponseEntity.ok(response);		
+		return ResponseEntity.status(HttpStatus.OK).body(response);	
 	}
 	
 	@PostMapping("/addGame")
-	public ResponseEntity<String> addCollectionGames(@RequestParam long userID,@RequestParam int gameID,@RequestParam long collectionID){
-		String response = listService.addGameToCollection(userID,gameID,collectionID);
-		return ResponseEntity.ok(response);
+	public ResponseEntity<String> addCollectionGames(@RequestParam int gameID,@RequestParam long collectionID){
+		String response = listService.addGameToCollection(gameID,collectionID);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 	
 	@GetMapping("/games")
 	public ResponseEntity<List<SearchGameListDto>> getGamesCollection(@RequestParam long collectionID) throws IOException{
 		List<SearchGameListDto> response = listService.getGamesCollection(collectionID);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 		
 	}
 	

@@ -1,5 +1,6 @@
 package com.gamelist.main.models.list;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ import com.gamelist.main.models.listGames.ListGamesRepository;
 import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 
+import exceptions.PersonalizedExceptions;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -73,6 +75,10 @@ public class ListService {
 
 	@Transactional
 	public Collection createCollection(String id, String name, MultipartFile image) throws IOException {
+		if(!userRepo.existsById(id)) {
+			throw new PersonalizedExceptions(id);
+		}
+		
 		User user = userRepo.getReferenceById(id);
 		Collection col;
 		if (!image.isEmpty()) {
@@ -94,6 +100,9 @@ public class ListService {
  
 	@Transactional
 	public List<GetCollectionDto> getUserLists(String userId) {
+		if(!userRepo.existsById(userId)) {
+			throw new PersonalizedExceptions(userId);
+		}
 		User user = userRepo.getReferenceById(userId);
 		List<Collection> list = listRepo.findAllByUser(user);
 		List<GetCollectionDto> response = list.stream()
@@ -103,7 +112,7 @@ public class ListService {
 	}
 
 	@Transactional
-	public String addGameToCollection(long userID, Integer gameID, long collectionID) {
+	public String addGameToCollection(Integer gameID, long collectionID) {
 		Collection collection = listRepo.getReferenceById(collectionID);
 		Game game = gameRepo.getReferenceByIgdbGameId(gameID);
 		if (game == null) {

@@ -18,6 +18,7 @@ import com.gamelist.main.models.played.PlayedRepository;
 import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 
+import exceptions.PersonalizedExceptions;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -55,6 +56,9 @@ public class ReviewService {
 
 	@Transactional
 	public Review create(ReviewPostDto reviewPost) {
+		if(!userRepo.existsById(reviewPost.userId())) {
+			throw new PersonalizedExceptions("User not found.");
+		}
 		User user = userRepo.getReferenceById(reviewPost.userId());
 		Game game = gameRepo.getReferenceByIgdbGameId(reviewPost.gameId());
 		if(reviewRepo.existsByGameAndUser(game, user)) {
@@ -76,6 +80,9 @@ public class ReviewService {
 
 	
 	public ReviewResponseDto getReview(long id) throws JsonMappingException, JsonProcessingException {
+		if(!reviewRepo.existsById(id)) {
+			throw new PersonalizedExceptions("Review not found");
+		}
 		Review review  = reviewRepo.getReferenceById(id);
 		SearchGameListDto s = igdbService.getDataToDto(review.getGame().getIgdbGameId());
 		ReviewResponseDto rr = new ReviewResponseDto(review.getReview_date(),review.getReview(),review.getRating(),s.name(),s.imageUrl(),s.id(),review.getId());
@@ -84,6 +91,9 @@ public class ReviewService {
 	
 	public List<ReviewResponseDto> getAllReviewsFromUser(String userId) throws JsonMappingException, JsonProcessingException{
 		List<Review> reviews = reviewRepo.findAllByUserId(userId);
+		if(reviews.size() == 0) {
+			throw new PersonalizedExceptions("User does not have reviews");
+		}
 		List<ReviewResponseDto> response = new ArrayList<>();
 		for (Review r : reviews) {
 			SearchGameListDto s = igdbService.getDataToDto(r.getGame().getIgdbGameId());
@@ -98,6 +108,9 @@ public class ReviewService {
 
 	public List<ReviewResponseDto> getTop3UserReviews(String userId) throws JsonMappingException, JsonProcessingException {
 		List<Review> reviews = reviewRepo.findTop3ByUserIdOrderByIdDesc(userId);
+		if(reviews.size() == 0) {
+			throw new PersonalizedExceptions("User does not have reviews");
+		}
 		List<ReviewResponseDto> response = new ArrayList<>();
 		for (Review r : reviews) {
 			SearchGameListDto s = igdbService.getDataToDto(r.getGame().getIgdbGameId());
