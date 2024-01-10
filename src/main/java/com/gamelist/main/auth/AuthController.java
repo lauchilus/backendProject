@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.gamelist.main.models.user.UserService;
 
 @Controller
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/auth")
 public class AuthController {
 	

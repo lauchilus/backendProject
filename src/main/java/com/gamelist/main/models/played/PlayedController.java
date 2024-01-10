@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/played")
 public class PlayedController {
 	

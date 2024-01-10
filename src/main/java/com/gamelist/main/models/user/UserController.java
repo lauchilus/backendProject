@@ -3,6 +3,7 @@ package com.gamelist.main.models.user;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gamelist.main.auth.RegisterDto;
+
 @Controller
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/user")
 public class UserController {
 
@@ -24,10 +27,10 @@ public class UserController {
 	
 	
 	@PostMapping
-	public ResponseEntity<User> createUser(@RequestBody CreateUserDto userDto ) throws IOException{
-		User user = userService.createUser(userDto);
+	public ResponseEntity<String> createUser(@RequestBody RegisterDto userDto ) throws IOException{
+		String user = userService.saveUser(userDto);
 		System.out.println(user+"*******************");
-		return ResponseEntity.ok(user); 
+		return ResponseEntity.status(HttpStatus.CREATED).body("created!");
 	}
 	
 	@PutMapping
