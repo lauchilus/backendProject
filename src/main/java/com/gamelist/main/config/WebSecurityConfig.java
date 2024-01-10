@@ -36,15 +36,7 @@ public class WebSecurityConfig {
 		return http.build();
 	}
 	
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://http://gamelist-bucket.s3-website-us-east-1.amazonaws.com/**");
-			}
-		};
-	}
+	
 	
 
 }
