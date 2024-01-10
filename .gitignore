@@ -34,3 +34,6 @@ build/
 
 ### Secrets ###
 SecretsStore.java
+
+### .Properties ###
+*.properties

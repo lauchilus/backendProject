@@ -19,7 +19,7 @@ import com.gamelist.main.igbd.SearchGameListDto;
 import com.gamelist.main.models.user.UserRepository;
 
 @Controller
-//@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/list")
 public class ListController {
 

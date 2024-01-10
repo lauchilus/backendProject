@@ -27,8 +27,8 @@ public class WebSecurityConfig {
 		http.authorizeHttpRequests(requests ->
         requests
 //        .requestMatchers("/auth/**").permitAll()
-       
-        .requestMatchers("http://localhost:4200/register").permitAll()
+        
+        .requestMatchers("/register").permitAll()
         .requestMatchers(HttpMethod.GET).permitAll()        
             .requestMatchers(HttpMethod.POST).authenticated()
 			.requestMatchers(HttpMethod.PUT).authenticated())
@@ -41,7 +41,7 @@ public class WebSecurityConfig {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://localhost:4200");
+				registry.addMapping("/**").allowedOrigins("http://http://gamelist-bucket.s3-website-us-east-1.amazonaws.com/**");
 			}
 		};
 	}

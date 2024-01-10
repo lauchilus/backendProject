@@ -81,7 +81,7 @@ public class ListService {
 		
 		User user = userRepo.getReferenceById(id);
 		Collection col;
-		if (!image.isEmpty()) {
+		if (image != null) {
 			Images im = cloudinary.upload(image);
 			col = addCollectionToDB(new Collection(name, user, im));
 		} else {
@@ -105,6 +105,9 @@ public class ListService {
 		}
 		User user = userRepo.getReferenceById(userId);
 		List<Collection> list = listRepo.findAllByUser(user);
+		if(list.isEmpty() || list == null) {
+			throw new PersonalizedExceptions("No lists");
+		}
 		List<GetCollectionDto> response = list.stream()
 				.map((Collection collection) -> new GetCollectionDto(collection.getId(), collection.getName(),collection.getImageList().getImageUrl(), collection.getLikes()))
 				.collect(Collectors.toList());

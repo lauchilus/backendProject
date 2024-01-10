@@ -39,9 +39,10 @@ public class UserService {
 		return user;
 	} 
 
-	@SuppressWarnings("null")
+	
 	@Transactional
 	public User updateProfile(String userId, MultipartFile update,String username,String bio) throws IOException {
+		System.out.println(userRepo.existsByUsername(username));
 		User user = userRepo.getReferenceById(userId);
 		if(update != null) {
 			//cloudinary.delete(user.getImage().getId());

@@ -17,7 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 @Controller
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/backlog")
 public class BacklogController {
 
