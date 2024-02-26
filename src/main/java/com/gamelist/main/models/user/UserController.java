@@ -17,15 +17,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.gamelist.main.auth.RegisterDto;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @Controller
 @CrossOrigin("*")
 @RequestMapping("/user")
+@Tag(name = "User")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 	
-	
+	@Operation(summary = "create user", description = "blabla")
 	@PostMapping
 	public ResponseEntity<String> createUser(@RequestBody RegisterDto userDto ) throws IOException{
 		String user = userService.saveUser(userDto);
@@ -33,14 +37,14 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("created!");
 	}
 	
-	@PutMapping
+	@PutMapping@Operation(summary = "update profile ", description = "blabla")
 	public ResponseEntity<User> updateProfile(@RequestParam String userId,@RequestBody MultipartFile avatar,@RequestParam String username, @RequestParam String bio) throws IOException{
 		User user = userService.updateProfile(userId, avatar,username,bio);
 		System.out.println(avatar);
 		return ResponseEntity.ok(user);
 	}
 	
-	@GetMapping
+	@GetMapping@Operation(summary = "get user info by id", description = "blabla")
 	public ResponseEntity<UserResponseDto> getUser(@RequestParam String id){
 		UserResponseDto user = userService.getUserReference(id);
 		return ResponseEntity.ok(user);
@@ -52,6 +56,7 @@ public class UserController {
 		return ResponseEntity.ok(user);
 	}
 	
+	@Operation(summary = "verify if a user exists by username", description = "blabla")
 	@GetMapping("/verify")
 	public ResponseEntity<?> verifyUsername(@RequestParam String username){
 		boolean exist = userService.existUsername(username);

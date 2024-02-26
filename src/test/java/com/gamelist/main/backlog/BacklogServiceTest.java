@@ -61,7 +61,7 @@ public class BacklogServiceTest {
 	@Test
 	public void shouldReturnBacklogResponseDto() throws JsonMappingException, JsonProcessingException {
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername").backlog(new ArrayList<Backlog>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).build();
+		Game game = Game.builder().id("testId").igdbGameId(71).build();
 		SearchGameListDto searchGameMock = new SearchGameListDto(71, "test Game" , "imageUrl.com");
 		Backlog backlogMock = Backlog.builder().id(1).user(user).game(game).build();
 		BacklogUserResponseDto responseExpected = new BacklogUserResponseDto(1,71,"test Game" , "imageUrl.com");
@@ -85,7 +85,7 @@ public class BacklogServiceTest {
 	public void shouldReturnAllBacklogsFromUser() throws JsonMappingException, JsonProcessingException {
 		List<Backlog> backlogs = new ArrayList<>();
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername").backlog(new ArrayList<Backlog>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).build();
+		Game game = Game.builder().id("testId").igdbGameId(71).build();
 		backlogs.add(Backlog.builder().id(1).user(user).game(game).build());
 		SearchGameListDto searchGameMock = new SearchGameListDto(71, "test Game" , "imageUrl.com");
 		

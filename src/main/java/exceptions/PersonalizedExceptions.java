@@ -9,6 +9,8 @@ public class PersonalizedExceptions extends RuntimeException {
 	public  PersonalizedExceptions(String message){
 		super(message);
 	}
+
+
 	
 	
 }

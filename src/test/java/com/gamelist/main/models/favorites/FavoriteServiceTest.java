@@ -79,13 +79,13 @@ class FavoriteServiceTest {
 	public void shouldReturnFavoritesCreateDto_addFavoriteToUser() throws Exception {
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.favorites(new ArrayList<Favorite>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).build();
-		Favorite favorite = Favorite.builder().id(1l).game(game).user(user).build();
+		Game game = Game.builder().id("testid").igdbGameId(71).build();
+		Favorite favorite = Favorite.builder().id("testid").game(game).user(user).build();
 		FavoritesCreateDto responseExpected = new FavoritesCreateDto(favorite.getId(),
 				favorite.getGame().getIgdbGameId());
 		user.addFavorite(favorite);
 		when(userService.getUser(any())).thenReturn(user);
-		when(gameRepo.getReferenceById(game.getId())).thenReturn(game);
+		when(gameRepo.getReferenceById(any())).thenReturn(game);
 		when(favoriteRepo.save(any())).thenReturn(favorite);
 		when(userRepo.existsById(anyString())).thenReturn(true);
 		FavoritesCreateDto favoriteServiceResponse = favoriteService.addFavoriteToUser(user.getId(),
@@ -100,8 +100,8 @@ class FavoriteServiceTest {
 		List<Favorite> favorites = new ArrayList<>();
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.favorites(new ArrayList<Favorite>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).build();
-		Favorite favorite = Favorite.builder().id(1l).game(game).user(user).build();
+		Game game = Game.builder().id("testid").igdbGameId(71).build();
+		Favorite favorite = Favorite.builder().id("testid").game(game).user(user).build();
 		favorites.add(favorite);
 		List<FavoritesResponseDto> responseExpected = new ArrayList<>();
 		GameListData[] gldArray = new GameListData[1];
@@ -131,8 +131,8 @@ class FavoriteServiceTest {
 
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.favorites(new ArrayList<Favorite>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).build();
-		Favorite favorite = Favorite.builder().id(1l).game(game).user(user).build();
+		Game game = Game.builder().id("testid").igdbGameId(71).build();
+		Favorite favorite = Favorite.builder().id("testid").game(game).user(user).build();
 
 		when(userService.getUser(anyString())).thenReturn(user);
 		when(gameRepo.save(any(Game.class))).thenReturn(game);

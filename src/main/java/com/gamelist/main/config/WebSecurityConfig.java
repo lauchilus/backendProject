@@ -3,6 +3,7 @@ package com.gamelist.main.config;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,19 +25,18 @@ public class WebSecurityConfig {
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests(requests ->
+		http
+		.authorizeHttpRequests(requests ->
         requests
 //        .requestMatchers("/auth/**").permitAll()
         
-        .requestMatchers("/register").permitAll()
+        .requestMatchers("/register","/v3/api-docs","/v3/api-docs/**","/swagger-ui.html","/swagger-ui/**","index.html","/v3/**").permitAll()
         .requestMatchers(HttpMethod.GET).permitAll()        
             .requestMatchers(HttpMethod.POST).authenticated()
 			.requestMatchers(HttpMethod.PUT).authenticated())
 			.oauth2ResourceServer(oAuth -> oAuth.jwt(Customizer.withDefaults()));
 		return http.build();
 	}
-	
-	
 	
 
 }

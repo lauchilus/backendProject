@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,37 +23,19 @@ import exceptions.PersonalizedExceptions;
 import jakarta.transaction.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewService {
  
-	@Autowired
-	private ReviewRepository reviewRepo;
-	
-	@Autowired
-	private UserRepository userRepo;
-	
-	@Autowired
-	private GameRepository gameRepo;
-	
-	@Autowired
-	private PlayedRepository playedRepo;
 
-	@Autowired
-	private IgdbService igdbService;
-	
-	
-	
-	
-	public ReviewService(ReviewRepository reviewRepo, UserRepository userRepo, GameRepository gameRepo,
-			PlayedRepository playedRepo, IgdbService igdbService) {
-		super();
-		this.reviewRepo = reviewRepo;
-		this.userRepo = userRepo;
-		this.gameRepo = gameRepo;
-		this.playedRepo = playedRepo;
-		this.igdbService = igdbService;
-	}
+	private final ReviewRepository reviewRepo;
 
+	private final UserRepository userRepo;
 
+	private final GameRepository gameRepo;
+
+	private final PlayedRepository playedRepo;
+
+	private final IgdbService igdbService;
 
 	@Transactional
 	public Review create(ReviewPostDto reviewPost) {
@@ -72,14 +55,14 @@ public class ReviewService {
 			game.addRating(reviewPost.rating());
 			game.addFinish();
 		}
-		Played played = playedRepo.save(new Played(user,game.getId()));
+		Played played = playedRepo.save(new Played(user,game.getIgdbGameId()));
 		Review review = reviewRepo.save(new Review(user,reviewPost.review(),game,reviewPost.rating()));
 		return review;
 	}
 	 
 
 	
-	public ReviewResponseDto getReview(long id) throws JsonMappingException, JsonProcessingException {
+	public ReviewResponseDto getReview(String id) throws JsonMappingException, JsonProcessingException {
 		if(!reviewRepo.existsById(id)) {
 			throw new PersonalizedExceptions("Review not found");
 		}
@@ -91,7 +74,7 @@ public class ReviewService {
 	
 	public List<ReviewResponseDto> getAllReviewsFromUser(String userId) throws JsonMappingException, JsonProcessingException{
 		List<Review> reviews = reviewRepo.findAllByUserId(userId);
-		if(reviews.size() == 0) {
+		if(reviews.isEmpty()) {
 			throw new PersonalizedExceptions("User does not have reviews");
 		}
 		List<ReviewResponseDto> response = new ArrayList<>();
@@ -108,7 +91,7 @@ public class ReviewService {
 
 	public List<ReviewResponseDto> getTop3UserReviews(String userId) throws JsonMappingException, JsonProcessingException {
 		List<Review> reviews = reviewRepo.findTop3ByUserIdOrderByIdDesc(userId);
-		if(reviews.size() == 0) {
+		if(reviews.isEmpty()) {
 			throw new PersonalizedExceptions("User does not have reviews");
 		}
 		List<ReviewResponseDto> response = new ArrayList<>();
@@ -119,5 +102,27 @@ public class ReviewService {
 		}
 		
 		return response;
+	}
+
+	public void updateReview(String reviewId,ReviewUpdate update){
+		if(!reviewRepo.existsById(reviewId)){
+			throw new PersonalizedExceptions("Review does not exists");
+		}
+		Review review = reviewRepo.getReferenceById(update.reviewText());
+		if(update.date() != null){
+			review.setReview_date(update.date());
+		}
+		if(update.rating() > 0 ){
+			review.setRating(update.rating());
+		}
+		if(update.reviewText().isBlank()){
+			review.setReview(update.reviewText());
+		}
+		reviewRepo.save(review);
+	}
+
+	public void deleteReview(String reviewId){
+		Review review = reviewRepo.getReferenceById(reviewId);
+		reviewRepo.delete(review);
 	}
 }

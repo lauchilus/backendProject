@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,42 +27,22 @@ import exceptions.PersonalizedExceptions;
 import jakarta.transaction.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class FavoriteService {
-	
-	
-	
-	@Autowired
-	private FavoriteRepository favoriteRepo;
-	
-	@Autowired
-	private GameRepository gameRepo;
-	
-	@Autowired
-	private UserRepository userRepo;
-	
-	@Autowired
-	private IgdbService igdbService;
-	
-	@Autowired
-	private UserService userService;
-	
-	private ObjectMapper objectMapper;
-	 
-	private IgdbHelpers igdbHelpers;
 
+	private final FavoriteRepository favoriteRepo;
+
+	private final GameRepository gameRepo;
+
+	private final UserRepository userRepo;
+
+	private final IgdbService igdbService;
+
+	private final UserService userService;
 	
-	
-	public FavoriteService(FavoriteRepository favoriteRepo, GameRepository gameRepo, UserRepository userRepo,
-			IgdbService igdbService, UserService userService,ObjectMapper objectMapper,IgdbHelpers igdbHelpers) {
-		super();
-		this.favoriteRepo = favoriteRepo;
-		this.gameRepo = gameRepo;
-		this.userRepo = userRepo;
-		this.igdbService = igdbService;
-		this.userService = userService;
-		this.objectMapper = objectMapper;
-		this.igdbHelpers = igdbHelpers;
-	} 
+	private final ObjectMapper objectMapper;
+	 
+	private final IgdbHelpers igdbHelpers;
 
 	public List<FavoritesResponseDto> getUserFavorites(String id) throws IOException {
 		if(!userRepo.existsById(id)) {
@@ -107,8 +88,7 @@ public class FavoriteService {
 			
 			user.addFavorite(fav);
 			userRepo.save(user);
-			FavoritesCreateDto response = new FavoritesCreateDto(fav.getId(), fav.getGame().getIgdbGameId());
-			return response;
+            return new FavoritesCreateDto(fav.getId(), fav.getGame().getIgdbGameId());
 		}
 		
 		
@@ -135,10 +115,8 @@ public class FavoriteService {
 	public GameListData getGamelistDataFromService(String res)
 			throws JsonProcessingException, JsonMappingException {
 		if(objectMapper != null) {
-		System.out.println(res+"oooo************");
 		GameListData[] data = this.objectMapper.readValue(res, GameListData[].class);
-		GameListData dat = data[0];
-		return dat;
+            return data[0];
 		}
 		else {
 			throw new RuntimeException();

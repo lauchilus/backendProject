@@ -22,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UUID;
 
 @Entity
 @Data
@@ -34,8 +35,8 @@ public class Collection {
 
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@UUID
+	private String id;
 	
 	@OneToOne
 	private Images imageList;

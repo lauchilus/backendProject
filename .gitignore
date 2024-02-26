@@ -36,6 +36,7 @@ build/
 SecretsStore.java
 
 ### Properties ###
+*.properties
 application.properties
 application-test.properties
 application-prod.properties

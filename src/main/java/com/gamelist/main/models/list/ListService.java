@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,44 +35,25 @@ import exceptions.PersonalizedExceptions;
 import jakarta.transaction.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class ListService {
 
-	@Autowired
-	private UserRepository userRepo;
+	private final UserRepository userRepo;
 
-	@Autowired
-	private GameRepository gameRepo;
+	private final GameRepository gameRepo;
 
-	@Autowired
-	private ListGamesRepository listGamesRepo;
+	private final ListGamesRepository listGamesRepo;
 
-	@Autowired
-	private CloudinaryComs cloudinary;
- 
-	@Autowired
-	private ListRepository listRepo;
+	private final CloudinaryComs cloudinary;
 
-	@Autowired
-	private IgdbService igdbService;
+	private final ListRepository listRepo;
+
+	private final IgdbService igdbService;
 	
-	private IgdbHelpers igdbHelpers;
+	private final IgdbHelpers igdbHelpers;
 	
-	private ObjectMapper objectMapper;
-	
-	
+	private final ObjectMapper objectMapper;
 
-	public ListService(UserRepository userRepo, GameRepository gameRepo, ListGamesRepository listGamesRepo,
-			CloudinaryComs cloudinary, ListRepository listRepo, IgdbService igdbService, ObjectMapper objectMapper,IgdbHelpers igdbHelpers) {
-		super();
-		this.userRepo = userRepo;
-		this.gameRepo = gameRepo;
-		this.listGamesRepo = listGamesRepo;
-		this.cloudinary = cloudinary;
-		this.listRepo = listRepo;
-		this.igdbService = igdbService;
-		this.objectMapper = objectMapper;
-		this.igdbHelpers = igdbHelpers;
-	}
 
 	@Transactional
 	public Collection createCollection(String id, String name, MultipartFile image) throws IOException {

@@ -25,6 +25,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UUID;
 
 @Entity
 @Data
@@ -36,6 +37,7 @@ import lombok.NoArgsConstructor;
 public class User {
 
 	@Id
+	@UUID
 	private String id;
 	
 	private String username;

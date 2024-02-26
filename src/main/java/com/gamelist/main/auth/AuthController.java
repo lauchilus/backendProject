@@ -2,6 +2,7 @@ package com.gamelist.main.auth;
 
 import java.security.Principal;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,20 +15,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.gamelist.main.models.user.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @Controller
 @CrossOrigin("*")
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
-	
-	@Autowired
-	private UserService userService;
 
+	private final UserService userService;
+
+	
 	@GetMapping("/test")
 	public String getPrincipalName(Principal principal) {
 		
 		
 		return principal.getName();
 	}
+	
 	
 	
 	@PostMapping("register")
