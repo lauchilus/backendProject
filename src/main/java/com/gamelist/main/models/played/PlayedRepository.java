@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.gamelist.main.models.user.User;
 
 @Repository
-public interface PlayedRepository extends JpaRepository<Played, Long> {
+public interface PlayedRepository extends JpaRepository<Played, String> {
 
 	
 	List<Played> findAllByUserIdOrderByIdDesc(String user,Pageable page);

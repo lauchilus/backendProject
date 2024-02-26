@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UUID;
 
 @Entity
 @Builder
@@ -26,11 +27,11 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ListGames {
 
-	
+
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@UUID
+	private String id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     private Collection collection;

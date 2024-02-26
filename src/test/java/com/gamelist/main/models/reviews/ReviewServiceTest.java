@@ -70,10 +70,10 @@ class ReviewServiceTest {
 	void shouldReturnReview_testCreate() {
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.lists(new ArrayList<Collection>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).rating(3).build();
-		Played playedExpected = Played.builder().id(1l).user(user).gameId(game.getIgdbGameId()).build();
-		Review reviewExpected = Review.builder().id(1l).user(user).review("Review test").rating(3).game(game).build();
-		Review rr = Review.builder().id(1l).user(user).review("Review test").rating(3).game(game).build();
+		Game game = Game.builder().id("testid").igdbGameId(71).rating(3).build();
+		Played playedExpected = Played.builder().id("testid").user(user).gameId(game.getIgdbGameId()).build();
+		Review reviewExpected = Review.builder().id("testid").user(user).review("Review test").rating(3).game(game).build();
+		Review rr = Review.builder().id("testid").user(user).review("Review test").rating(3).game(game).build();
 		ReviewPostDto reviewPost = new ReviewPostDto("Review tes", "testId", 3, 71);
 
 		when(userRepo.getReferenceById(anyString())).thenReturn(user);
@@ -93,19 +93,19 @@ class ReviewServiceTest {
 	void shouldReturnReviewResponseDto_testGetReview() throws JsonMappingException, JsonProcessingException {
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.lists(new ArrayList<Collection>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).rating(3).build();
-		Review review = Review.builder().id(1l).user(user).review("Review Test").rating(3).game(game).build();
+		Game game = Game.builder().id("testid").igdbGameId(71).rating(3).build();
+		Review review = Review.builder().id("testid").user(user).review("Review Test").rating(3).game(game).build();
 
 		SearchGameListDto searchDto = new SearchGameListDto(71, "game test", "testURL.com");
 		ReviewResponseDto reviewExpected = new ReviewResponseDto(null, "Review Test", 3, "game test", "testURL.com", 71,
-				1);
+				"testid");
 
-		when(reviewRepo.getReferenceById(anyLong())).thenReturn(review);
-		when(reviewRepo.existsById(anyLong())).thenReturn(true);
+		when(reviewRepo.getReferenceById(anyString())).thenReturn(review);
+		when(reviewRepo.existsById(anyString())).thenReturn(true);
 		when(igdbService.getDataToDto(anyLong())).thenReturn(searchDto);
 		when(userRepo.existsById(anyString())).thenReturn(true);
 
-		ReviewResponseDto reviewResponseService = reviewService.getReview(anyLong());
+		ReviewResponseDto reviewResponseService = reviewService.getReview(anyString());
 
 		assertNotNull(reviewResponseService);
 		assertEquals(reviewExpected, reviewResponseService);
@@ -116,10 +116,10 @@ class ReviewServiceTest {
 	void testGetAllReviewsFromUser() throws JsonMappingException, JsonProcessingException {
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.lists(new ArrayList<Collection>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).rating(3).build();
-		Review review = Review.builder().id(1l).user(user).review("Review Test").rating(3).game(game).build();
+		Game game = Game.builder().id("testid").igdbGameId(71).rating(3).build();
+		Review review = Review.builder().id("testid").user(user).review("Review Test").rating(3).game(game).build();
 		List<Review> reviews = new ArrayList<>();
-		Images image = Images.builder().id(1l).name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
+		Images image = Images.builder().id("testid").name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
 		SearchGameListDto searchGameDto = new SearchGameListDto(game.getIgdbGameId(), "test name", image.getImageUrl());
 		ReviewResponseDto reviewResponseExpected = new ReviewResponseDto(null, review.getReview(), review.getRating(),
 				"test name", image.getImageUrl(), game.getIgdbGameId(), game.getId());
@@ -141,21 +141,21 @@ class ReviewServiceTest {
 	void testGetTop3UserReviews() throws JsonMappingException, JsonProcessingException {
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.lists(new ArrayList<Collection>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).rating(3).build();
-		Game game2 = Game.builder().id(2l).igdbGameId(72).rating(3).build();
-		Game game3 = Game.builder().id(3l).igdbGameId(73).rating(3).build();
-		Review review = Review.builder().id(1l).user(user).review("Review Test").rating(3).game(game).build();
-		Review review2 = Review.builder().id(2l).user(user).review("Review Test2").rating(3).game(game).build();
-		Review review3 = Review.builder().id(3l).user(user).review("Review Test3").rating(3).game(game).build();
+		Game game = Game.builder().id("testid").igdbGameId(71).rating(3).build();
+		Game game2 = Game.builder().id("testid2").igdbGameId(72).rating(3).build();
+		Game game3 = Game.builder().id("testid3").igdbGameId(73).rating(3).build();
+		Review review = Review.builder().id("testid").user(user).review("Review Test").rating(3).game(game).build();
+		Review review2 = Review.builder().id("testid2").user(user).review("Review Test2").rating(3).game(game).build();
+		Review review3 = Review.builder().id("testid3").user(user).review("Review Test3").rating(3).game(game).build();
 		List<Review> reviews = new ArrayList<>();
-		Images image = Images.builder().id(1l).name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
+		Images image = Images.builder().id("testid").name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
 		SearchGameListDto searchGameDto = new SearchGameListDto(game.getIgdbGameId(), "test name", image.getImageUrl());
 		ReviewResponseDto reviewResponseExpected = new ReviewResponseDto(null, review.getReview(), review.getRating(),
 				"test name", image.getImageUrl(), game.getIgdbGameId(), game.getId());
 		ReviewResponseDto reviewResponseExpected2 = new ReviewResponseDto(null, review2.getReview(), review2.getRating(),
-				"test name", image.getImageUrl(), game.getIgdbGameId(), 2);
+				"test name", image.getImageUrl(), game.getIgdbGameId(), "testid");
 		ReviewResponseDto reviewResponseExpected3 = new ReviewResponseDto(null, review2.getReview(), review2.getRating(),
-				"test name", image.getImageUrl(), game.getIgdbGameId(), 3);
+				"test name", image.getImageUrl(), game.getIgdbGameId(), "testid");
 		List<ReviewResponseDto> listReviewResponseExpected = new ArrayList<>();
 		listReviewResponseExpected.add(reviewResponseExpected);
 		listReviewResponseExpected.add(reviewResponseExpected2);

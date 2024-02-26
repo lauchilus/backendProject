@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UUID;
 
 @Entity
 @Data
@@ -29,18 +30,18 @@ public class Played {
 
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@UUID
+	private String id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 	
-	private long gameId;
+	private Long gameId;
 	
 	//TODO cambiar a add date
 	private LocalDate finish_date ;
 	
-	public Played(User user, long gameID) {
+	public Played(User user, Long gameID) {
 		this.user = user;
 		this.gameId = gameID;
 		this.finish_date = LocalDate.now();

@@ -12,7 +12,7 @@ public record ReviewResponseDto(
 		String name,
 		String gameImage,
 		long gameId,
-		long id
+		String id
 		) {
 
 	

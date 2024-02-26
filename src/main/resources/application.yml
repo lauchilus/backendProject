@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/gamelist
+    username: root
+    password: luffy
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+
+  jackson:
+    default-property-inclusion: non_null
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken%40system.gserviceaccount.com
+
+
+

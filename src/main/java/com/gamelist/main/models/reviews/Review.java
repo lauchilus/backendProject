@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UUID;
 
 @Entity
 @Data
@@ -30,8 +31,8 @@ import lombok.NoArgsConstructor;
 public class Review {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	@UUID
+	private String id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;

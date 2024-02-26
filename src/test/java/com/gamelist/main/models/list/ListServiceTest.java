@@ -90,8 +90,8 @@ class ListServiceTest {
 
 		byte[] content = "Contenido del archivo".getBytes();
 		MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", content);
-		Images image = Images.builder().id(1l).name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
-		Collection collectionExpected = Collection.builder().id(10l).name("Test List").user(user).imageList(image).build();
+		Images image = Images.builder().id("testid").name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
+		Collection collectionExpected = Collection.builder().id("testid").name("Test List").user(user).imageList(image).build();
 		
 		when(userRepo.getReferenceById(anyString())).thenReturn(user);
 		when(cloudinary.upload(any(MultipartFile.class))).thenReturn(image);
@@ -111,8 +111,8 @@ class ListServiceTest {
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.lists(new ArrayList<Collection>()).build();
 		
-		Images image = Images.builder().id(1l).name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
-		Collection collectionExpected = Collection.builder().id(10l).name("Test List").user(user).imageList(image).build();
+		Images image = Images.builder().id("testid").name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
+		Collection collectionExpected = Collection.builder().id("testid").name("Test List").user(user).imageList(image).build();
 		lists.add(collectionExpected);
 		
 		List<GetCollectionDto> mockListDto = lists.stream()
@@ -135,10 +135,10 @@ class ListServiceTest {
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.lists(new ArrayList<Collection>()).build();
 		
-		Images image = Images.builder().id(1l).name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
-		Collection collectionExpected = Collection.builder().id(10l).name("Test List").gamesList(new ArrayList<ListGames>()).user(user).imageList(image).gamesList(new ArrayList<>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).build();
-		ListGames listGames = ListGames.builder().id(1l).collection(collectionExpected).game(game).build();
+		Images image = Images.builder().id("testid").name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
+		Collection collectionExpected = Collection.builder().id("testid").name("Test List").gamesList(new ArrayList<ListGames>()).user(user).imageList(image).gamesList(new ArrayList<>()).build();
+		Game game = Game.builder().id("testid").igdbGameId(71).build();
+		ListGames listGames = ListGames.builder().id("testid").collection(collectionExpected).game(game).build();
 		collectionExpected.getGamesList().add(listGames);
 		
 		when(listRepo.getReferenceById(anyLong())).thenReturn(collectionExpected);
@@ -165,10 +165,10 @@ class ListServiceTest {
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.lists(new ArrayList<Collection>()).build();
 		
-		Images image = Images.builder().id(1l).name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
-		Collection collectionExpected = Collection.builder().id(10l).name("Test List").gamesList(new ArrayList<ListGames>()).user(user).imageList(image).gamesList(new ArrayList<>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).build();
-		ListGames listGames = ListGames.builder().id(1l).collection(collectionExpected).game(game).build();
+		Images image = Images.builder().id("testid").name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
+		Collection collectionExpected = Collection.builder().id("testid").name("Test List").gamesList(new ArrayList<ListGames>()).user(user).imageList(image).gamesList(new ArrayList<>()).build();
+		Game game = Game.builder().id("testid").igdbGameId(71).build();
+		ListGames listGames = ListGames.builder().id("testid").collection(collectionExpected).game(game).build();
 		collectionExpected.getGamesList().add(listGames);
 		
 		List<SearchGameListDto> responseExpected = new ArrayList<>();

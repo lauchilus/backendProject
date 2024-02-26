@@ -1,7 +1,7 @@
 package com.gamelist.main.models.favorites;
 
 public record FavoritesResponseDto(
-		long id,
+		String id,
 		long gameId,
 		String name,
 		String gameImageUrl

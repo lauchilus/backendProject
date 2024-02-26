@@ -79,9 +79,9 @@ class PlayedServiceTest {
 	void testAddPlayed() throws Exception {
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.lists(new ArrayList<Collection>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).build();
+		Game game = Game.builder().id("testid").igdbGameId(71).build();
 		
-		Played playedExpected = Played.builder().id(1l).user(user).gameId(game.getIgdbGameId()).build();
+		Played playedExpected = Played.builder().id("testid").user(user).gameId(game.getIgdbGameId()).build();
 		
 		when(userService.getUser(anyString())).thenReturn(user);
 		when(gameRepo.getReferenceByIgdbGameId(anyLong())).thenReturn(game);
@@ -101,11 +101,11 @@ class PlayedServiceTest {
 		List<Played> playedList = new ArrayList<>();
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.lists(new ArrayList<Collection>()).build();
-		Game game = Game.builder().id(1l).igdbGameId(71).build();
-		Played played = Played.builder().id(1l).user(user).gameId(game.getIgdbGameId()).build();
+		Game game = Game.builder().id("testid").igdbGameId(71).build();
+		Played played = Played.builder().id("testid").user(user).gameId(game.getIgdbGameId()).build();
 		playedList.add(played);
 		
-		Images image = Images.builder().id(1l).name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
+		Images image = Images.builder().id("testid").name("test image").imageUrl("ImageUrl.com").imageId("testID1").build();
 		
 		
 		GameListData[] gldArray = new GameListData[1];

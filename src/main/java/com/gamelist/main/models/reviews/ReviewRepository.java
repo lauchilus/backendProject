@@ -10,7 +10,7 @@ import com.gamelist.main.models.user.User;
 
 
 @Repository
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+public interface ReviewRepository extends JpaRepository<Review, String> {
 
 	List<Review> findAllByUserId(String user); 
 	

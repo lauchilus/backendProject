@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,37 +28,25 @@ import com.gamelist.main.models.user.UserService;
 import jakarta.transaction.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class PlayedService {
 
-	@Autowired
-	private PlayedRepository playedRepo;
+
+	private final PlayedRepository playedRepo;
 	
-	@Autowired
-	private GameRepository gameRepo;
+
+	private final GameRepository gameRepo;
 	
-	@Autowired
-	private UserService userService;
+
+	private final UserService userService;
+
+	private final IgdbService igdbService;
 	
+	private final ObjectMapper objectMapper;
 	
-	@Autowired
-	private IgdbService igdbService;
+	private final IgdbHelpers igdbHelpers;
 	
-	private ObjectMapper objectMapper;
-	
-	private IgdbHelpers igdbHelpers;
-	
-	
-	 
-	public PlayedService(PlayedRepository playedRepo, GameRepository gameRepo, UserService userService,
-			IgdbService igdbService, ObjectMapper objectMapper, IgdbHelpers igdbHelpers) {
-		super();
-		this.playedRepo = playedRepo;
-		this.gameRepo = gameRepo;
-		this.userService = userService;
-		this.igdbService = igdbService;
-		this.objectMapper = objectMapper;
-		this.igdbHelpers = igdbHelpers;
-	}
+
 
 
 	@Transactional
@@ -93,9 +82,8 @@ public class PlayedService {
 	
 	public String getImageResponse(CoverGame data) throws IOException {
 		String ss = data.getImage_id();
-		String imageUrl = igdbHelpers.imageBuilder(ss);
-		
-		return imageUrl;
+
+        return igdbHelpers.imageBuilder(ss);
 	}
 	
 	
@@ -111,6 +99,10 @@ public class PlayedService {
 			throw new RuntimeException();
 		}
 	}
-	
+
+	public void deletePlayed(String played){
+		Played p = playedRepo.getReferenceById(played);
+		playedRepo.delete(p);
+	}
 	
 }

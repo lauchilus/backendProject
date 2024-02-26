@@ -5,7 +5,7 @@ import java.util.List;
 import com.gamelist.main.igbd.GameData;
 
 public record GetCollectionDto(
-		long id,
+		String id,
 		String name,
 		String imageUrl,
 		long likes
