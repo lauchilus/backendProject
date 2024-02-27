@@ -15,6 +15,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @Builder
@@ -32,7 +34,8 @@ public class Backlog {
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Game game;
-	
+
+	private LocalDate dateAdded;
 
 	public Backlog(User user, Game game) {
 		this.user = user;

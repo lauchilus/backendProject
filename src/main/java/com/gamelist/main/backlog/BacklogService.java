@@ -3,6 +3,7 @@ package com.gamelist.main.backlog;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,30 +22,22 @@ import exceptions.PersonalizedExceptions;
 import jakarta.transaction.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class BacklogService {
 
-	@Autowired
-	private BacklogRepository backlogRepo;
 
-	@Autowired
-	private UserRepository userRepo;
+	private final BacklogRepository backlogRepo;
 
-	@Autowired
-	private GameRepository gameRepo;
 
-	@Autowired
-	private IgdbService igdb;
+	private final UserRepository userRepo;
 
-	
-	
-	public BacklogService(BacklogRepository backlogRepo, UserRepository userRepo, GameRepository gameRepo,
-			IgdbService igdb) {
-		super();
-		this.backlogRepo = backlogRepo;
-		this.userRepo = userRepo;
-		this.gameRepo = gameRepo;
-		this.igdb = igdb;
-	}
+
+	private final GameRepository gameRepo;
+
+
+	private final IgdbService igdb;
+
+
 
 	@Transactional
 	public BacklogUserResponseDto addGameToBacklog(String userId, long gameId)
@@ -92,4 +85,8 @@ public class BacklogService {
 
 	// TODO DELETE SERVICE
 
+	public void delete(String backlogid){
+		Backlog backlog = backlogRepo.getReferenceById(backlogid);
+		backlogRepo.delete(backlog);
+	}
 }

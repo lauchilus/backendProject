@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.validator.constraints.UUID;
 
 @Entity
@@ -30,7 +31,7 @@ public class ListGames {
 
 
 	@Id
-	@UUID
+	@UuidGenerator
 	private String id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

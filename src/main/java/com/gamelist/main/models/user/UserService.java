@@ -3,6 +3,7 @@ package com.gamelist.main.models.user;
 import java.awt.Image;
 import java.io.IOException;
 
+import exceptions.PersonalizedExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -91,7 +92,7 @@ public class UserService {
 	@Transactional
 	public String saveUser(RegisterDto register) {
 		if(userRepo.existsByUsername(register.username())) {
-			return "Username already exits!";
+			throw new PersonalizedExceptions("Username already exists");
 		}
 		User user = userRepo.save(new User(register.email(),register.userUID(),register.username()));
 		return "Save ok";

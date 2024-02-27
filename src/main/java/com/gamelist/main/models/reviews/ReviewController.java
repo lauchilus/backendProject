@@ -35,8 +35,8 @@ public class ReviewController {
 	}
 	
 	@Operation(summary = "get a specific review by id", description = "blabla")
-	@GetMapping("/id")
-	public ResponseEntity<ReviewResponseDto> getReview(@RequestParam String id) throws JsonMappingException, JsonProcessingException{
+	@GetMapping("/{id}")
+	public ResponseEntity<ReviewResponseDto> getReview(@PathVariable String id) throws JsonMappingException, JsonProcessingException{
 		ReviewResponseDto review = reviewService.getReview(id);
 		System.out.println(review);
 		return ResponseEntity.status(HttpStatus.OK).body(review);
@@ -58,7 +58,7 @@ public class ReviewController {
 	
 	//TODO likes,update and deletes
 
-	@GetMapping("/{reviewId}")
+	@PutMapping("/{reviewId}")
 	public ResponseEntity<String> updateReview(@PathVariable String reviewId,@RequestBody ReviewUpdate update){
 		reviewService.updateReview(reviewId,update);
 		return new ResponseEntity<String>("Review updated",HttpStatus.OK);

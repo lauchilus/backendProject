@@ -2,6 +2,7 @@ package com.gamelist.main.models.user;
 
 import java.io.IOException;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +25,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @CrossOrigin("*")
 @RequestMapping("/user")
 @Tag(name = "User")
+@RequiredArgsConstructor
 public class UserController {
 
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
 	
 	@Operation(summary = "create user", description = "blabla")
 	@PostMapping

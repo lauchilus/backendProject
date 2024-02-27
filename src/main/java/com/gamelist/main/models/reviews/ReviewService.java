@@ -75,7 +75,7 @@ public class ReviewService {
 	public List<ReviewResponseDto> getAllReviewsFromUser(String userId) throws JsonMappingException, JsonProcessingException{
 		List<Review> reviews = reviewRepo.findAllByUserId(userId);
 		if(reviews.isEmpty()) {
-			throw new PersonalizedExceptions("User does not have reviews");
+			throw new PersonalizedExceptions("User does not have reviews or user not exists");
 		}
 		List<ReviewResponseDto> response = new ArrayList<>();
 		for (Review r : reviews) {
