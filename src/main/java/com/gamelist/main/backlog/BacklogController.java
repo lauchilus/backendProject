@@ -7,11 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -44,5 +40,10 @@ public class BacklogController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
-	//TODO DELETE ENDPOINT 
+	//TODO DELETE ENDPOINT
+	@DeleteMapping("/{backlogId}")
+	public ResponseEntity<String> deleteBacklog(@PathVariable String backlogId){
+		backlogService.delete(backlogId);
+		return new ResponseEntity<String>("Game deleted from backlog",HttpStatus.OK);
+	}
 }

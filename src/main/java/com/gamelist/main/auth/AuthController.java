@@ -35,7 +35,7 @@ public class AuthController {
 	
 	
 	
-	@PostMapping("register")
+	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestBody RegisterDto register){
 		String user = userService.saveUser(register);
 		return ResponseEntity.ok(user);

@@ -9,7 +9,7 @@ import com.gamelist.main.models.game.Game;
 import com.gamelist.main.models.user.User;
 
 @Repository
-public interface BacklogRepository extends JpaRepository<Backlog, Long> {
+public interface BacklogRepository extends JpaRepository<Backlog, String> {
 
 	List<Backlog> getReferenceByUserId(String userId);
 

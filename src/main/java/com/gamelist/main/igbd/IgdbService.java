@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,12 +27,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
+@RequiredArgsConstructor
 public class IgdbService {
-	@Autowired
-	private RestTemplate restTemplate;
 
-	@Autowired
-	private HttpHeaders headers = new HttpHeaders();
+	private final RestTemplate restTemplate;
+
+	private final HttpHeaders headers = new HttpHeaders();
 
 	public String listar() {
 		String requestBody = "fields name; limit 10;";
