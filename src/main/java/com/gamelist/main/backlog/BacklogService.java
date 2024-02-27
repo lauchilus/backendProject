@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -67,12 +68,12 @@ public class BacklogService {
 		return bs;
 	}
 
-	public List<BacklogUserResponseDto> getAllBacklogsFromUser(String userId)
-			throws JsonMappingException, JsonProcessingException {
+	public List<BacklogUserResponseDto> getAllBacklogsFromUser(String userId, Pageable page)
+			throws JsonProcessingException {
 		if(!userRepo.existsById(userId)) {
 			throw new PersonalizedExceptions("User not found");
 		}
-		List<Backlog> b = backlogRepo.getReferenceByUserId(userId);
+		List<Backlog> b = backlogRepo.getReferenceByUserId(userId,page);
 		List<BacklogUserResponseDto> response = new ArrayList<>();
 		for (Backlog back : b) {
 			SearchGameListDto s = igdb.getDataToDto(back.getGame().getIgdbGameId());
