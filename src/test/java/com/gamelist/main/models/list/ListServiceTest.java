@@ -22,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
@@ -121,9 +122,9 @@ class ListServiceTest {
 		
 		when(userRepo.getReferenceById(anyString())).thenReturn(user);
 		when(userRepo.existsById(anyString())).thenReturn(true);
-		when(listRepo.findAllByUser(any(User.class))).thenReturn(lists);
+		when(listRepo.findAllByUser(any(User.class),any(Pageable.class))).thenReturn(lists);
 		
-		List<GetCollectionDto> responseService = listService.getUserLists(user.getId());
+		List<GetCollectionDto> responseService = listService.getUserLists(user.getId(),0,5);
 		
 		assertNotNull(responseService);
 		assertEquals(mockListDto, responseService);
@@ -141,13 +142,13 @@ class ListServiceTest {
 		ListGames listGames = ListGames.builder().id("testid").collection(collectionExpected).game(game).build();
 		collectionExpected.getGamesList().add(listGames);
 		
-		when(listRepo.getReferenceById(anyLong())).thenReturn(collectionExpected);
+		when(listRepo.getReferenceById(anyString())).thenReturn(collectionExpected);
 		when(gameRepo.getReferenceByIgdbGameId(anyLong())).thenReturn(game);
 		when(gameRepo.save(any(Game.class))).thenReturn(game);
 		when(listGamesRepo.save(any(ListGames.class))).thenReturn(listGames);
 		when(listRepo.save(any(Collection.class))).thenReturn(collectionExpected);
 		
-		String responseService = listService.addGameToCollection(712, 1);
+		String responseService = listService.addGameToCollection(712, "1");
 		String responseExpected = "Game Added";
 		
 		
@@ -181,12 +182,12 @@ class ListServiceTest {
 		
 		String responseIgdbService = "[{\"id\": 71, \"name\": \"Test name\", \"storyline\": \"test's storyline\", \"cover\": {\"id\": 1, \"image_id\": \"testImageId\"}, \"follows\": 0}]";
 		ObjectMapper objectMapperMock = mock(ObjectMapper.class);
-		when(listRepo.getReferenceById(anyLong())).thenReturn(collectionExpected);
+		when(listRepo.getReferenceById(anyString())).thenReturn(collectionExpected);
 		when(igdbService.searchGameByIdToList(anyLong())).thenReturn(responseIgdbService);
 		when(objectMapper.readValue(anyString(), eq(GameListData[].class))).thenReturn(new GameListData[] { gmd });
 		when(igdbHelpers.imageBuilder(anyString())).thenReturn("ImageUrl.com");
 		
-		List<SearchGameListDto> responseService = listService.getGamesCollection(10);
+		List<SearchGameListDto> responseService = listService.getGamesCollection("10",0,10);
 		
 		assertNotNull(responseService);
 		assertEquals(responseExpected.size(), responseService.size());

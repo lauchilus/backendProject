@@ -5,12 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import com.api.igdb.utils.ImageBuilderKt;
-import com.api.igdb.utils.ImageSize;
-import com.api.igdb.utils.ImageType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,19 +41,26 @@ public class FavoriteService {
 	 
 	private final IgdbHelpers igdbHelpers;
 
-	public List<FavoritesResponseDto> getUserFavorites(String id) throws IOException {
-		if(!userRepo.existsById(id)) {
-			throw new PersonalizedExceptions("user not found.");
+	public List<FavoritesResponseDto> getUserFavorites(String id, int offset, int limit) throws IOException {
+		if (!userRepo.existsById(id)) {
+			throw new PersonalizedExceptions("User not found.");
 		}
-		List<Favorite> favorites = favoriteRepo.findAllByUserId(id);
+
+		// Utilizar PageRequest para la paginación real en la consulta
+		Pageable page = PageRequest.of(offset, limit);
+		List<Favorite> favoritesPage = favoriteRepo.findAllByUserId(id,page);
+
 		List<FavoritesResponseDto> responseList = new ArrayList<>();
-		for (Favorite favorite : favorites) {
+
+		// Iterar sobre los elementos de la página actual
+		for (Favorite favorite : favoritesPage) {
 			String res = igdbService.searchGameByIdToList(favorite.getGame().getIgdbGameId());
 			GameListData dat = getGamelistDataFromService(res);
 			String image = getImageResponse(dat.getCover());
-			FavoritesResponseDto resp = new FavoritesResponseDto(favorite.getId(),favorite.getGame().getIgdbGameId(),dat.getName(),image);
+			FavoritesResponseDto resp = new FavoritesResponseDto(favorite.getId(), favorite.getGame().getIgdbGameId(), dat.getName(), image);
 			responseList.add(resp);
 		}
+
 		return responseList;
 	}
 	

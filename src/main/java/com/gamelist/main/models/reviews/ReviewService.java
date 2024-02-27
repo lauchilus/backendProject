@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -72,8 +73,8 @@ public class ReviewService {
 		return rr;
 	}
 	
-	public List<ReviewResponseDto> getAllReviewsFromUser(String userId) throws JsonMappingException, JsonProcessingException{
-		List<Review> reviews = reviewRepo.findAllByUserId(userId);
+	public List<ReviewResponseDto> getAllReviewsFromUser(String userId, Pageable page) throws JsonMappingException, JsonProcessingException{
+		List<Review> reviews = reviewRepo.findAllByUserId(userId,page);
 		if(reviews.isEmpty()) {
 			throw new PersonalizedExceptions("User does not have reviews or user not exists");
 		}
@@ -89,7 +90,7 @@ public class ReviewService {
 
 
 
-	public List<ReviewResponseDto> getTop3UserReviews(String userId) throws JsonMappingException, JsonProcessingException {
+	public List<ReviewResponseDto> getTop3UserReviews(String userId) throws JsonProcessingException {
 		List<Review> reviews = reviewRepo.findTop3ByUserIdOrderByIdDesc(userId);
 		if(reviews.isEmpty()) {
 			throw new PersonalizedExceptions("User does not have reviews");

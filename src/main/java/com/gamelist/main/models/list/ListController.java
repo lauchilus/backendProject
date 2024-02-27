@@ -41,22 +41,22 @@ public class ListController {
 	
 	@Operation(summary = "get all lists games from user", description = "blabla")
 	@GetMapping
-	public ResponseEntity<List<GetCollectionDto>> getLists(@RequestParam String userID){
-		List<GetCollectionDto> response = listService.getUserLists(userID);
+	public ResponseEntity<List<GetCollectionDto>> getLists(@RequestParam String userID,@RequestParam(defaultValue = "0",required = false) int offset, @RequestParam(defaultValue = "12",required = false) int limit){
+		List<GetCollectionDto> response = listService.getUserLists(userID,offset,limit);
 		return ResponseEntity.status(HttpStatus.OK).body(response);	
 	}
 	
 	@Operation(summary = "add game to a specific collection", description = "blabla")
 	@PostMapping("/addGame")
-	public ResponseEntity<String> addCollectionGames(@RequestParam int gameID,@RequestParam long collectionID){
+	public ResponseEntity<String> addCollectionGames(@RequestParam int gameID,@RequestParam String collectionID){
 		String response = listService.addGameToCollection(gameID,collectionID);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 	
 	@Operation(summary = "get all games games from collection", description = "blabla")
 	@GetMapping("/games")
-	public ResponseEntity<List<SearchGameListDto>> getGamesCollection(@RequestParam long collectionID) throws IOException{
-		List<SearchGameListDto> response = listService.getGamesCollection(collectionID);
+	public ResponseEntity<List<SearchGameListDto>> getGamesCollection(@RequestParam String collectionID,@RequestParam(defaultValue = "0",required = false) int offset, @RequestParam(defaultValue = "12",required = false) int limit) throws IOException{
+		List<SearchGameListDto> response = listService.getGamesCollection(collectionID,offset,limit);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 		
 	}
