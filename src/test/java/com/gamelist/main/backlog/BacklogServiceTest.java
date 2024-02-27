@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 
@@ -89,12 +91,13 @@ public class BacklogServiceTest {
 		backlogs.add(Backlog.builder().id(1).user(user).game(game).build());
 		SearchGameListDto searchGameMock = new SearchGameListDto(71, "test Game" , "imageUrl.com");
 		
-		when(backlogRepository.getReferenceByUserId(user.getId())).thenReturn(backlogs);
+		when(backlogRepository.getReferenceByUserId(user.getId(),any())).thenReturn(backlogs);
 		when(igdb.getDataToDto(game.getIgdbGameId())).thenReturn(searchGameMock);
 		when(userRepository.existsById(anyString())).thenReturn(true);
-		List<BacklogUserResponseDto> response = backlogService.getAllBacklogsFromUser("testId");
+		Pageable page = PageRequest.of(0,5);
+		List<BacklogUserResponseDto> response = backlogService.getAllBacklogsFromUser("testId",page);
 		
-		verify(backlogRepository,times(1)).getReferenceByUserId(user.getId());
+		verify(backlogRepository,times(1)).getReferenceByUserId(user.getId(),any());
 		
 		assertNotNull(response);
 		assertEquals(backlogs.size(), response.size());
