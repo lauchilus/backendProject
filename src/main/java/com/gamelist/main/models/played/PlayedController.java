@@ -36,8 +36,8 @@ public class PlayedController {
 	
 	@Operation(summary = "get all played games from user", description = "blabla")
 	@GetMapping("/{user}")
-	public ResponseEntity<List<PlayedResponse>> getAllUserPlayed(@PathVariable String user,@RequestParam int page) throws IOException{
-		List<PlayedResponse> response = playedService.getAllUserPlayed(user,PageRequest.of(page, 9));
+	public ResponseEntity<List<PlayedResponse>> getAllUserPlayed(@PathVariable String user,@RequestParam(defaultValue = "0",required = false) int offset, @RequestParam(defaultValue = "12",required = false) int limit) throws IOException{
+		List<PlayedResponse> response = playedService.getAllUserPlayed(user,PageRequest.of(offset, limit));
 		
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

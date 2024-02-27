@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -43,15 +44,15 @@ public class ReviewController {
 	}
 	
 	@Operation(summary = "get all reviews for a user", description = "blabla")
-	@GetMapping()
-	public ResponseEntity<List<ReviewResponseDto>> getAllUserReviews(@RequestParam String userId) throws JsonMappingException, JsonProcessingException{
-		List<ReviewResponseDto> response = reviewService.getAllReviewsFromUser(userId);
+	@GetMapping("/{userId}")
+	public ResponseEntity<List<ReviewResponseDto>> getAllUserReviews(@PathVariable String userId,@RequestParam(defaultValue = "0",required = false) int offset, @RequestParam(defaultValue = "12",required = false) int limit) throws JsonMappingException, JsonProcessingException{
+		List<ReviewResponseDto> response = reviewService.getAllReviewsFromUser(userId, PageRequest.of(offset,limit));
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@Operation(summary = "get the las 3 reviews from user", description = "blabla")
 	@GetMapping("profile")
-	public ResponseEntity<List<ReviewResponseDto>> getTop3UserReviews(@RequestParam String userId) throws JsonMappingException, JsonProcessingException{
+	public ResponseEntity<List<ReviewResponseDto>> getTop3UserReviews(@RequestParam String userId) throws JsonProcessingException{
 		List<ReviewResponseDto> response = reviewService.getTop3UserReviews(userId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

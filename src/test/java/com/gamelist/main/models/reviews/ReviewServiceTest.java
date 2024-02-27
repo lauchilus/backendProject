@@ -19,6 +19,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 
@@ -127,10 +129,11 @@ class ReviewServiceTest {
 		listReviewResponseExpected.add(reviewResponseExpected);
 		reviews.add(review);
 
-		when(reviewRepo.findAllByUserId(anyString())).thenReturn(reviews);
+		when(reviewRepo.findAllByUserId(anyString(),any())).thenReturn(reviews);
 		when(igdbService.getDataToDto(anyLong())).thenReturn(searchGameDto);
+		Pageable page = PageRequest.of(0,5);
 
-		List<ReviewResponseDto> responseExpected = reviewService.getAllReviewsFromUser("testId");
+		List<ReviewResponseDto> responseExpected = reviewService.getAllReviewsFromUser("testId",page);
 
 		assertNotNull(responseExpected);
 		assertEquals(listReviewResponseExpected, responseExpected);

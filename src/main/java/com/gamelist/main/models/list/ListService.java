@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -81,12 +83,13 @@ public class ListService {
 	}
  
 	@Transactional
-	public List<GetCollectionDto> getUserLists(String userId) {
+	public List<GetCollectionDto> getUserLists(String userId,int offset,int limit) {
 		if(!userRepo.existsById(userId)) {
 			throw new PersonalizedExceptions(userId);
 		}
+		Pageable page = PageRequest.of(offset,limit);
 		User user = userRepo.getReferenceById(userId);
-		List<Collection> list = listRepo.findAllByUser(user);
+		List<Collection> list = listRepo.findAllByUser(user,page);
 		if(list.isEmpty() || list == null) {
 			throw new PersonalizedExceptions("No lists");
 		}
@@ -97,7 +100,7 @@ public class ListService {
 	}
 
 	@Transactional
-	public String addGameToCollection(Integer gameID, long collectionID) {
+	public String addGameToCollection(Integer gameID, String collectionID) {
 		Collection collection = listRepo.getReferenceById(collectionID);
 		Game game = gameRepo.getReferenceByIgdbGameId(gameID);
 		if (game == null) {
@@ -111,11 +114,10 @@ public class ListService {
 		return "Game Added";
 	}
 
-	public List<SearchGameListDto> getGamesCollection(long collectionID) throws IOException {
+	public List<SearchGameListDto> getGamesCollection(String collectionID,int offset, int limit) throws IOException {
 		Collection collection = listRepo.getReferenceById(collectionID);
 		List<ListGames> listGames = collection.getGamesList();
 		List<SearchGameListDto> responseList = new ArrayList<>();
-		ObjectMapper objectMapper = new ObjectMapper();
 		for (ListGames game : listGames) {
 			String res = igdbService.searchGameByIdToList(game.getGame().getIgdbGameId());
 			GameListData dat = getGamelistDataFromService(res);
@@ -130,11 +132,7 @@ public class ListService {
 	private void saveGameList(Collection collection, Game game) {
 		ListGames listGames = new ListGames(collection, game);
 	    listGamesRepo.save(listGames);
-
-	    // Agrega la relación bidireccional 
 	    collection.getGamesList().add(listGames);
-
-	    // Guarda las entidades
 	    listRepo.save(collection);
 	    gameRepo.save(game);
 
@@ -150,14 +148,14 @@ public class ListService {
 		return resp;
 	}
 
-	public String getImageResponse(com.gamelist.main.igbd.CoverGame data) throws IOException {
+	public String getImageResponse(com.gamelist.main.igbd.CoverGame data){
 		String ss = data.getImage_id();
 		String imageUrl = igdbHelpers.imageBuilder(ss);
 		return imageUrl;
 	}
 	
 	public GameListData getGamelistDataFromService(String res)
-			throws JsonProcessingException, JsonMappingException {
+			throws JsonProcessingException {
 		if(objectMapper != null) {
 		System.out.println(res+"oooo************");
 		GameListData[] data = this.objectMapper.readValue(res, GameListData[].class);
@@ -165,7 +163,7 @@ public class ListService {
 		return dat;
 		}
 		else {
-			throw new RuntimeException();
+			throw new PersonalizedExceptions("Something went wrong");
 		}
 	}
 
