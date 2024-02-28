@@ -1,4 +1,4 @@
-package com.gamelist.main.backlog;
+package com.gamelist.main.models.backlog;
 
 import com.gamelist.main.models.game.Game;
 import com.gamelist.main.models.user.User;
@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 
@@ -34,6 +35,7 @@ public class Backlog {
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Game game;
+
 
 	private LocalDate dateAdded;
 

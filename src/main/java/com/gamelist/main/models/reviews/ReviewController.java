@@ -18,8 +18,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @Controller
-@CrossOrigin("*")
-@RequestMapping("/reviews") 
+@CrossOrigin("http://localhost:4200")
+@RequestMapping("/api/v1/reviews")
 @Tag(name = "Review")
 @RequiredArgsConstructor
 public class ReviewController {
@@ -44,20 +44,19 @@ public class ReviewController {
 	}
 	
 	@Operation(summary = "get all reviews for a user", description = "blabla")
-	@GetMapping("/{userId}")
+	@GetMapping("/user/{userId}")
 	public ResponseEntity<List<ReviewResponseDto>> getAllUserReviews(@PathVariable String userId,@RequestParam(defaultValue = "0",required = false) int offset, @RequestParam(defaultValue = "12",required = false) int limit) throws JsonMappingException, JsonProcessingException{
 		List<ReviewResponseDto> response = reviewService.getAllReviewsFromUser(userId, PageRequest.of(offset,limit));
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@Operation(summary = "get the las 3 reviews from user", description = "blabla")
-	@GetMapping("profile")
-	public ResponseEntity<List<ReviewResponseDto>> getTop3UserReviews(@RequestParam String userId) throws JsonProcessingException{
+	@GetMapping("/profile/{userId}")
+	public ResponseEntity<List<ReviewResponseDto>> getTop3UserReviews(@PathVariable String userId) throws JsonProcessingException{
 		List<ReviewResponseDto> response = reviewService.getTop3UserReviews(userId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	
-	//TODO likes,update and deletes
+
 
 	@PutMapping("/{reviewId}")
 	public ResponseEntity<String> updateReview(@PathVariable String reviewId,@RequestBody ReviewUpdate update){

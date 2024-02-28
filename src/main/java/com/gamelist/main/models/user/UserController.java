@@ -7,13 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.gamelist.main.auth.RegisterDto;
@@ -22,8 +16,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
-@CrossOrigin("*")
-@RequestMapping("/user")
+@CrossOrigin("http://localhost:4200")
+@RequestMapping("/api/v1/users")
 @Tag(name = "User")
 @RequiredArgsConstructor
 public class UserController {
@@ -38,15 +32,16 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("created!");
 	}
 	
-	@PutMapping@Operation(summary = "update profile ", description = "blabla")
-	public ResponseEntity<User> updateProfile(@RequestParam String userId,@RequestBody MultipartFile avatar,@RequestParam String username, @RequestParam String bio) throws IOException{
-		User user = userService.updateProfile(userId, avatar,username,bio);
-		System.out.println(avatar);
+	@PutMapping("/{userId}")
+	@Operation(summary = "update profile ", description = "blabla")
+	public ResponseEntity<User> updateProfile(@PathVariable String userId,@RequestBody UpdateUser updateUser) throws IOException{
+		User user = userService.updateProfile(userId, updateUser.avatar(),updateUser.username(), updateUser.bio());
 		return ResponseEntity.ok(user);
 	}
 	
-	@GetMapping@Operation(summary = "get user info by id", description = "blabla")
-	public ResponseEntity<UserResponseDto> getUser(@RequestParam String id){
+	@GetMapping("/{id}")
+	@Operation(summary = "get user info by id", description = "blabla")
+	public ResponseEntity<UserResponseDto> getUser(@PathVariable String id){
 		UserResponseDto user = userService.getUserReference(id);
 		return ResponseEntity.ok(user);
 	}

@@ -1,4 +1,4 @@
-package exceptions;
+package com.gamelist.main.exceptions;
 
 import org.springframework.http.HttpStatus;
 

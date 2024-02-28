@@ -1,13 +1,10 @@
-package com.gamelist.main.backlog;
+package com.gamelist.main.models.backlog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,7 +16,7 @@ import com.gamelist.main.models.game.GameRepository;
 import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 
-import exceptions.PersonalizedExceptions;
+import com.gamelist.main.exceptions.PersonalizedExceptions;
 import jakarta.transaction.Transactional;
 
 @Service

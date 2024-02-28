@@ -14,8 +14,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
-@CrossOrigin("*")
-@RequestMapping("/favorites")
+@CrossOrigin("http://localhost:4200")
+@RequestMapping("/api/v1/favorites")
 @Tag(name="Favorite")
 @RequiredArgsConstructor
 public class FavoriteController {
@@ -31,15 +31,15 @@ public class FavoriteController {
 	}
 	
 	@Operation(summary = "add a favorite", description = "blabla")
-	@PostMapping
-	public ResponseEntity<FavoritesCreateDto> addFavoriteToUser(@RequestParam String userId,@RequestParam long gameId) throws Exception{
+	@PostMapping("{userId}")
+	public ResponseEntity<FavoritesCreateDto> addFavoriteToUser(@PathVariable String userId,@RequestParam long gameId) throws Exception{
 		FavoritesCreateDto response = favoriteService.addFavoriteToUser(userId,gameId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@Operation(summary = "get top 5 favorites games from user", description = "blabla")
-	@GetMapping("/profile")
-	public ResponseEntity<List<FavoritesResponseDto>> getTop5Favorites(@RequestParam String userId) throws IOException{
+	@GetMapping("/profile/{userId}")
+	public ResponseEntity<List<FavoritesResponseDto>> getTop5Favorites(@PathVariable String userId) throws IOException{
 		List<FavoritesResponseDto> response  = favoriteService.getUserTopFavorites(userId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

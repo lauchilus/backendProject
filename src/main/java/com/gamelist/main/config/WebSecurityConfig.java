@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -29,7 +30,6 @@ public class WebSecurityConfig {
 		.authorizeHttpRequests(requests ->
         requests
 //        .requestMatchers("/auth/**").permitAll()
-        
         .requestMatchers("/register","/v3/api-docs","/v3/api-docs/**","/swagger-ui.html","/swagger-ui/**","index.html","/v3/**").permitAll()
         .requestMatchers(HttpMethod.GET).permitAll()        
             .requestMatchers(HttpMethod.POST).authenticated()
@@ -37,6 +37,8 @@ public class WebSecurityConfig {
 			.oauth2ResourceServer(oAuth -> oAuth.jwt(Customizer.withDefaults()));
 		return http.build();
 	}
-	
+
+
+
 
 }

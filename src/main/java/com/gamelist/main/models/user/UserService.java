@@ -1,9 +1,8 @@
 package com.gamelist.main.models.user;
 
-import java.awt.Image;
 import java.io.IOException;
 
-import exceptions.PersonalizedExceptions;
+import com.gamelist.main.exceptions.PersonalizedExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -94,7 +93,7 @@ public class UserService {
 		if(userRepo.existsByUsername(register.username())) {
 			throw new PersonalizedExceptions("Username already exists");
 		}
-		User user = userRepo.save(new User(register.email(),register.userUID(),register.username()));
+		User user = userRepo.save(new User.UserBuilder().id(register.userUID()).email(register.email()).username(register.username()).build());
 		return "Save ok";
 	}
 

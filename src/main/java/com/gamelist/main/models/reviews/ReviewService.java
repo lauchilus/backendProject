@@ -2,10 +2,8 @@ package com.gamelist.main.models.reviews;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +18,7 @@ import com.gamelist.main.models.played.PlayedRepository;
 import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 
-import exceptions.PersonalizedExceptions;
+import com.gamelist.main.exceptions.PersonalizedExceptions;
 import jakarta.transaction.Transactional;
 
 @Service

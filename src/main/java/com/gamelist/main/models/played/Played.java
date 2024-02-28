@@ -38,8 +38,7 @@ public class Played {
 	private User user;
 	
 	private Long gameId;
-	
-	//TODO cambiar a add date
+
 	private LocalDate finish_date ;
 	
 	public Played(User user, Long gameID) {

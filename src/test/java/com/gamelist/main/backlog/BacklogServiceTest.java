@@ -11,6 +11,10 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gamelist.main.models.backlog.Backlog;
+import com.gamelist.main.models.backlog.BacklogRepository;
+import com.gamelist.main.models.backlog.BacklogService;
+import com.gamelist.main.models.backlog.BacklogUserResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
