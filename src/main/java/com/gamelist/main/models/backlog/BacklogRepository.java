@@ -1,4 +1,4 @@
-package com.gamelist.main.backlog;
+package com.gamelist.main.models.backlog;
 
 import java.util.List;
 

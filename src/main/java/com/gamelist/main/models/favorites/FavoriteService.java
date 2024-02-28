@@ -20,7 +20,7 @@ import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 import com.gamelist.main.models.user.UserService;
 
-import exceptions.PersonalizedExceptions;
+import com.gamelist.main.exceptions.PersonalizedExceptions;
 import jakarta.transaction.Transactional;
 
 @Service

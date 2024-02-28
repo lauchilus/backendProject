@@ -1,5 +1,7 @@
 package com.gamelist.main.igbd;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -30,8 +32,8 @@ public class IgdbConfiguration {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("Authorization", "Bearer " + apiToken);
-		headers.set("Client-ID", apiClientId); 
-
+		headers.set("Client-ID", apiClientId);
+		System.out.println(apiToken);
 		return headers;
 	}
 

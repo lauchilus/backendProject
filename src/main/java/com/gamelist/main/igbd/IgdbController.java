@@ -21,8 +21,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
-@CrossOrigin("*")
-@RequestMapping("/games")
+@CrossOrigin("http://localhost:4200/")
+@RequestMapping("/api/v1/games")
 @Tag(name="Games")
 @RequiredArgsConstructor
 public class IgdbController {
@@ -38,15 +38,15 @@ public class IgdbController {
 	}
 	
 	@Operation(summary = "get game details", description = "blabla")
-	@GetMapping("/details")
-	public ResponseEntity<SearchGameDetailsDto> game(@RequestParam long id) throws IOException {
+	@GetMapping("/details/{id}")
+	public ResponseEntity<SearchGameDetailsDto> game(@PathVariable long id) throws IOException {
 		SearchGameDetailsDto a = igdb.searchGameDetails(id);
 		return ResponseEntity.ok(a);
 	}
 	
 	@Operation(summary = "get games that match the name", description = "blabla")
 	@GetMapping("/a/{name}")
-	public ResponseEntity<List<SearchGameListDto>> gameDetails(@PathVariable String name,@RequestParam int offset) throws IOException {
+	public ResponseEntity<List<SearchGameListDto>> gameDetails(@PathVariable String name,@RequestParam(defaultValue = "0",required = false) Integer offset) throws IOException {
 		List<SearchGameListDto> a = igdb.searchGameListByName(name,offset);
 		return ResponseEntity.ok(a);
 	}

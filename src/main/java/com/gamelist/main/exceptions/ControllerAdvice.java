@@ -3,14 +3,12 @@ package com.gamelist.main.exceptions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import exceptions.ErrorDto;
-import exceptions.PersonalizedExceptions;
-import io.swagger.v3.core.util.Json;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @org.springframework.web.bind.annotation.ControllerAdvice
 public class ControllerAdvice {
@@ -44,4 +42,11 @@ public class ControllerAdvice {
         ErrorDto response = new ErrorDto(exception.getMessage(), "Invalid arguments");
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorDto> handleValidationException(MethodArgumentTypeMismatchException exception) {
+        ErrorDto response = new ErrorDto(exception.getMessage(), "Invalid arguments");
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 }

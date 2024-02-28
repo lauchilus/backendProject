@@ -39,7 +39,7 @@ public class Collection {
 	@UuidGenerator
 	private String id;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.EAGER)
 	private Images imageList;
 	
 	private String name;
@@ -48,7 +48,7 @@ public class Collection {
 	private User user;
 	
 
-	private long likes = 1;
+	private long likes = 0;
 	
 	@OneToMany(mappedBy = "collection",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	private List<ListGames> gamesList;

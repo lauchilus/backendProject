@@ -6,18 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.gamelist.main.models.listGames.ListGamesService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.api.igdb.utils.ImageBuilderKt;
-import com.api.igdb.utils.ImageSize;
-import com.api.igdb.utils.ImageType;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gamelist.main.cloudinary.CloudinaryComs;
 import com.gamelist.main.igbd.GameData;
@@ -33,7 +32,7 @@ import com.gamelist.main.models.listGames.ListGamesRepository;
 import com.gamelist.main.models.user.User;
 import com.gamelist.main.models.user.UserRepository;
 
-import exceptions.PersonalizedExceptions;
+import com.gamelist.main.exceptions.PersonalizedExceptions;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -56,6 +55,9 @@ public class ListService {
 	
 	private final ObjectMapper objectMapper;
 
+	private final ListGamesService listGamesService;
+
+
 
 	@Transactional
 	public Collection createCollection(String id, String name, MultipartFile image) throws IOException {
@@ -64,7 +66,7 @@ public class ListService {
 		}
 		
 		User user = userRepo.getReferenceById(id);
-		Collection col;
+		Collection col = new Collection();
 		if (image != null) {
 			Images im = cloudinary.upload(image);
 			col = addCollectionToDB(new Collection(name, user, im));
@@ -115,8 +117,11 @@ public class ListService {
 	}
 
 	public List<SearchGameListDto> getGamesCollection(String collectionID,int offset, int limit) throws IOException {
+		if(!listRepo.existsById(collectionID)){
+			throw new EntityNotFoundException();
+		}
 		Collection collection = listRepo.getReferenceById(collectionID);
-		List<ListGames> listGames = collection.getGamesList();
+		List<ListGames> listGames = listGamesService.getAllGamesFromCollection(collectionID);
 		List<SearchGameListDto> responseList = new ArrayList<>();
 		for (ListGames game : listGames) {
 			String res = igdbService.searchGameByIdToList(game.getGame().getIgdbGameId());
@@ -157,7 +162,6 @@ public class ListService {
 	public GameListData getGamelistDataFromService(String res)
 			throws JsonProcessingException {
 		if(objectMapper != null) {
-		System.out.println(res+"oooo************");
 		GameListData[] data = this.objectMapper.readValue(res, GameListData[].class);
 		GameListData dat = data[0];
 		return dat;

@@ -17,8 +17,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 @Controller
-@CrossOrigin("*")
-@RequestMapping("/played")
+@CrossOrigin("http://localhost:4200")
+@RequestMapping("/api/v1/played")
 @Tag(name="Played")
 @RequiredArgsConstructor
 public class PlayedController {
@@ -27,8 +27,8 @@ public class PlayedController {
 	private final PlayedService playedService;
 	
 	@Operation(summary = "add a played game", description = "blabla")
-	@PostMapping
-	public ResponseEntity<PlayedPostResponse> addPlayed(@RequestParam String user,@RequestParam long gameID) throws Exception{
+	@PostMapping("/{user}")
+	public ResponseEntity<PlayedPostResponse> addPlayed(@PathVariable String user,@RequestParam long gameID) throws Exception{
 		Played played = playedService.addPlayed(user,gameID);
 		PlayedPostResponse response = new PlayedPostResponse(played.getId(), played.getGameId(), played.getFinish_date());
 		return ResponseEntity.status(HttpStatus.OK).body(response);

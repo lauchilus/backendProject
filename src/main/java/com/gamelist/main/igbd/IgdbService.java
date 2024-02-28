@@ -32,7 +32,7 @@ public class IgdbService {
 
 	private final RestTemplate restTemplate;
 
-	private final HttpHeaders headers = new HttpHeaders();
+	private final HttpHeaders headers;
 
 	public String listar() {
 		String requestBody = "fields name; limit 10;";
