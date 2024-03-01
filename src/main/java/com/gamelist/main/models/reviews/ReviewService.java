@@ -3,6 +3,7 @@ package com.gamelist.main.models.reviews;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gamelist.main.models.game.GamesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,9 +36,10 @@ public class ReviewService {
 	private final PlayedRepository playedRepo;
 
 	private final IgdbService igdbService;
+	private final GamesService gamesService;
 
 	@Transactional
-	public Review create(ReviewPostDto reviewPost) {
+	public Review create(ReviewPostDto reviewPost) throws JsonProcessingException {
 		if(!userRepo.existsById(reviewPost.userId())) {
 			throw new PersonalizedExceptions("User not found.");
 		}
@@ -51,6 +53,7 @@ public class ReviewService {
 			game.addFinish();
 		}else {
 			game = gameRepo.save(new Game(reviewPost.gameId()));
+			igdbService.getGameDetails(reviewPost.gameId());
 			game.addRating(reviewPost.rating());
 			game.addFinish();
 		}
@@ -66,7 +69,7 @@ public class ReviewService {
 			throw new PersonalizedExceptions("Review not found");
 		}
 		Review review  = reviewRepo.getReferenceById(id);
-		SearchGameListDto s = igdbService.getDataToDto(review.getGame().getIgdbGameId());
+		SearchGameListDto s = gamesService.getGameList(review.getGame().getIgdbGameId());
 		ReviewResponseDto rr = new ReviewResponseDto(review.getReview_date(),review.getReview(),review.getRating(),s.name(),s.imageUrl(),s.id(),review.getId());
 		return rr;
 	}
@@ -78,7 +81,7 @@ public class ReviewService {
 		}
 		List<ReviewResponseDto> response = new ArrayList<>();
 		for (Review r : reviews) {
-			SearchGameListDto s = igdbService.getDataToDto(r.getGame().getIgdbGameId());
+			SearchGameListDto s = gamesService.getGameList(r.getGame().getIgdbGameId());
 			ReviewResponseDto rr = new ReviewResponseDto(r.getReview_date(),r.getReview(),r.getRating(),s.name(),s.imageUrl(),s.id(),r.getId());
 			response.add(rr);
 		}
@@ -95,7 +98,7 @@ public class ReviewService {
 		}
 		List<ReviewResponseDto> response = new ArrayList<>();
 		for (Review r : reviews) {
-			SearchGameListDto s = igdbService.getDataToDto(r.getGame().getIgdbGameId());
+			SearchGameListDto s = gamesService.getGameList(r.getGame().getIgdbGameId());
 			ReviewResponseDto rr = new ReviewResponseDto(r.getReview_date(),r.getReview(),r.getRating(),s.name(),s.imageUrl(),s.id(),r.getId());
 			response.add(rr);
 		}

@@ -29,7 +29,7 @@ public class ReviewController {
 	
 	@Operation(summary = "create a review", description = "blabla")
 	@PostMapping()
-	public ResponseEntity<String> createReview(@RequestBody @Valid ReviewPostDto reviewPost, @RequestHeader("uid") String uid) {
+	public ResponseEntity<String> createReview(@RequestBody @Valid ReviewPostDto reviewPost, @RequestHeader("uid") String uid) throws JsonProcessingException {
 		Review review = reviewService.create(reviewPost);
 		//ReviewResponseDto response = new ReviewResponseDto(review.getReview_date(), review.getReview(), review.getRating(), review.getGame().toString());
 		return ResponseEntity.status(HttpStatus.CREATED).body("Review Added.");

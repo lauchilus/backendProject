@@ -7,6 +7,10 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gamelist.main.models.game.Game;
+import com.gamelist.main.models.game.GameDetails;
+import com.gamelist.main.models.game.GameRepository;
+import com.gamelist.main.models.game.GamesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -34,6 +38,8 @@ public class IgdbService {
 
 	private final HttpHeaders headers;
 
+	private final GamesService gamesService;
+
 	public String listar() {
 		String requestBody = "fields name; limit 10;";
 		// Crea una HttpEntity con los encabezados y el cuerpo
@@ -42,13 +48,46 @@ public class IgdbService {
 	}
 
 	public SearchGameDetailsDto searchGameDetails(long game) throws JsonMappingException, JsonProcessingException {
+		if(!gamesService.exists(game)){
+			APICalypse apiCalypse = new APICalypse()
+					.fields("summary,name,first_release_date, cover.image_id,involved_companies.company.name")
+					.where("id=" + game).limit(1);
+			String requestBody = apiCalypse.buildQuery();
+			ResponseEntity<String> res = callEndpointGames(requestBody);
+			SearchGameDetailsDto response = processGameToDto(res.getBody());
+			Game g = gamesService.getGame(game);
+			saveGameDetails(game, response, g);
+			return response;
+		}else{
+			return gamesService.getGameDetails(game);
+		}
+
+
+	}
+
+	public GameDetails getGameDetails(long game) throws JsonProcessingException {
 		APICalypse apiCalypse = new APICalypse()
 				.fields("summary,name,first_release_date, cover.image_id,involved_companies.company.name")
 				.where("id=" + game).limit(1);
 		String requestBody = apiCalypse.buildQuery();
 		ResponseEntity<String> res = callEndpointGames(requestBody);
 		SearchGameDetailsDto response = processGameToDto(res.getBody());
-		return response;
+		return saveGameDetails(game,response,gamesService.getGame(game));
+	}
+	
+	
+
+	private GameDetails saveGameDetails(long game, SearchGameDetailsDto response, Game g) {
+		GameDetails details = GameDetails.builder()
+				.id(game)
+				.company(response.involvedCompany())
+				.firstReleaseDate(response.releaseDate())
+				.summary(response.summary())
+				.imageUrl(response.imageUrl())
+				.name(response.name())
+				.game(g)
+				.build();
+		return gamesService.saveGameDetails(details);
 	}
 
 	private SearchGameDetailsDto processGameToDto(String game) throws JsonMappingException, JsonProcessingException {

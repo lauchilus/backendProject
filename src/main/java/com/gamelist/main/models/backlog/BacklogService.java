@@ -3,6 +3,7 @@ package com.gamelist.main.models.backlog;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gamelist.main.models.game.GamesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,8 @@ public class BacklogService {
 
 	private final IgdbService igdb;
 
+	private final GamesService gamesService;
+
 
 
 	@Transactional
@@ -48,6 +51,7 @@ public class BacklogService {
 		if (game == null) {
 			// Create a new Game if it doesn't exist
 			game = gameRepo.save(new Game(gameId));
+			igdb.getGameDetails(gameId);
 
 		}
 
@@ -59,7 +63,7 @@ public class BacklogService {
 		else {
 			backlog = backlogRepo.save(new Backlog(user,game)); 
 		}
-		SearchGameListDto s = igdb.getDataToDto(backlog.getGame().getIgdbGameId());
+		SearchGameListDto s = gamesService.getGameList(gameId);
 		BacklogUserResponseDto bs = new BacklogUserResponseDto(backlog.getId(), s.id(),s.name(),s.imageUrl());
  
 		return bs;
@@ -73,7 +77,7 @@ public class BacklogService {
 		List<Backlog> b = backlogRepo.getReferenceByUserId(userId,page);
 		List<BacklogUserResponseDto> response = new ArrayList<>();
 		for (Backlog back : b) {
-			SearchGameListDto s = igdb.getDataToDto(back.getGame().getIgdbGameId());
+			SearchGameListDto s = gamesService.getGameList(back.getGame().getIgdbGameId());
 			BacklogUserResponseDto bs = new BacklogUserResponseDto(back.getId(), s.id(),s.name(),s.imageUrl());
 			response.add(bs);
 		}

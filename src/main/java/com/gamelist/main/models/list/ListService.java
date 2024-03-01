@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.gamelist.main.models.game.GamesService;
 import com.gamelist.main.models.listGames.ListGamesService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +58,8 @@ public class ListService {
 
 	private final ListGamesService listGamesService;
 
+	private final GamesService gamesService;
+
 
 
 	@Transactional
@@ -102,11 +105,12 @@ public class ListService {
 	}
 
 	@Transactional
-	public String addGameToCollection(Integer gameID, String collectionID) {
+	public String addGameToCollection(Integer gameID, String collectionID) throws JsonProcessingException {
 		Collection collection = listRepo.getReferenceById(collectionID);
 		Game game = gameRepo.getReferenceByIgdbGameId(gameID);
 		if (game == null) {
 			game = gameRepo.save(new Game(gameID));
+			igdbService.getGameDetails(gameID);
 			saveGameList(collection, game);
 		}else {
 			saveGameList(collection, game);
@@ -124,11 +128,8 @@ public class ListService {
 		List<ListGames> listGames = listGamesService.getAllGamesFromCollection(collectionID);
 		List<SearchGameListDto> responseList = new ArrayList<>();
 		for (ListGames game : listGames) {
-			String res = igdbService.searchGameByIdToList(game.getGame().getIgdbGameId());
-			GameListData dat = getGamelistDataFromService(res);
-			String image = getImageResponse(dat.getCover());
-			SearchGameListDto resp = new SearchGameListDto(dat.getId(),dat.getName(),image);
-			responseList.add(resp);
+			SearchGameListDto s = gamesService.getGameList(game.getGame().getIgdbGameId());
+			responseList.add(s);
 		}
 		return responseList;
 	} 

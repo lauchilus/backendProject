@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -132,7 +133,7 @@ class ListServiceTest {
 	}
 
 	@Test
-	void testAddGameToCollection() {
+	void testAddGameToCollection() throws JsonProcessingException {
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.lists(new ArrayList<Collection>()).build();
 		
