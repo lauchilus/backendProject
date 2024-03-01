@@ -69,7 +69,7 @@ class ReviewServiceTest {
 	}
 
 	@Test
-	void shouldReturnReview_testCreate() {
+	void shouldReturnReview_testCreate() throws JsonProcessingException {
 		User user = User.builder().id("testId").email("test@email.com").username("testUsername")
 				.lists(new ArrayList<Collection>()).build();
 		Game game = Game.builder().id("testid").igdbGameId(71).rating(3).build();

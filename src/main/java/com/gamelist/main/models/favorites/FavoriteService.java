@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gamelist.main.igbd.SearchGameListDto;
+import com.gamelist.main.models.game.GamesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +43,8 @@ public class FavoriteService {
 	 
 	private final IgdbHelpers igdbHelpers;
 
+	private final GamesService gamesService;
+
 	public List<FavoritesResponseDto> getUserFavorites(String id, int offset, int limit) throws IOException {
 		if (!userRepo.existsById(id)) {
 			throw new PersonalizedExceptions("User not found.");
@@ -54,10 +58,8 @@ public class FavoriteService {
 
 		// Iterar sobre los elementos de la página actual
 		for (Favorite favorite : favoritesPage) {
-			String res = igdbService.searchGameByIdToList(favorite.getGame().getIgdbGameId());
-			GameListData dat = getGamelistDataFromService(res);
-			String image = getImageResponse(dat.getCover());
-			FavoritesResponseDto resp = new FavoritesResponseDto(favorite.getId(), favorite.getGame().getIgdbGameId(), dat.getName(), image);
+			SearchGameListDto s = gamesService.getGameList(favorite.getGame().getIgdbGameId());
+			FavoritesResponseDto resp = new FavoritesResponseDto(favorite.getId(), favorite.getGame().getIgdbGameId(), s.name(), s.imageUrl());
 			responseList.add(resp);
 		}
 
@@ -84,6 +86,8 @@ public class FavoriteService {
 		Game game = gameRepo.getReferenceByIgdbGameId(gameId);
 		if(game==null) {
 			game = gameRepo.save(new Game(gameId));
+			igdbService.getGameDetails(gameId);
+
 		}
 		if(favoriteRepo.existsByGameAndUser(game,user)) {
 			throw new PersonalizedExceptions("Game already in favorites!");
@@ -105,11 +109,8 @@ public class FavoriteService {
 		List<Favorite> favorites = favoriteRepo.findTop4ByUserId(id);
 		List<FavoritesResponseDto> responseList = new ArrayList<>();
 		for (Favorite favorite : favorites) {
-			String res = igdbService.searchGameByIdToList(favorite.getGame().getIgdbGameId());
-			GameListData dat = getGamelistDataFromService(res);
-			String image = getImageResponse(dat.getCover());
-			FavoritesResponseDto resp = new FavoritesResponseDto(favorite.getId(),
-					favorite.getGame().getIgdbGameId(),dat.getName(),image);
+			SearchGameListDto s = gamesService.getGameList(favorite.getGame().getIgdbGameId());
+			FavoritesResponseDto resp = new FavoritesResponseDto(favorite.getId(), favorite.getGame().getIgdbGameId(), s.name(), s.imageUrl());
 			responseList.add(resp);
 		}  
 		return responseList;

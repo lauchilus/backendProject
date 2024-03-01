@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gamelist.main.exceptions.PersonalizedExceptions;
+import com.gamelist.main.igbd.SearchGameListDto;
+import com.gamelist.main.models.game.GamesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +48,7 @@ public class PlayedService {
 	private final ObjectMapper objectMapper;
 	
 	private final IgdbHelpers igdbHelpers;
-	
+	private final GamesService gamesService;
 
 
 
@@ -56,6 +58,7 @@ public class PlayedService {
 		Game game = gameRepo.getReferenceByIgdbGameId(gameId);
 		if(game==null) {
 			game = gameRepo.save(new Game(gameId));
+			igdbService.getGameDetails(gameId);
 		}
 		if(playedRepo.existsByGameIdAndUser(game.getIgdbGameId(),user)) {
 			throw new PersonalizedExceptions("Game already in list!");
@@ -69,13 +72,10 @@ public class PlayedService {
 	public List<PlayedResponse> getAllUserPlayed(String userid,Pageable page) throws IOException {
 		List<Played> playedList = playedRepo.findAllByUserIdOrderByIdDesc(userid,page);
 		List<PlayedResponse> responseList = new ArrayList<>();
-		ObjectMapper objectMapper = new ObjectMapper();
 		for (Played p : playedList) {
-			String res = igdbService.searchGameByIdToList(p.getGameId());
-			GameListData dat = getGamelistDataFromService(res);
-			String image = getImageResponse(dat.getCover());
-			PlayedResponse resp = new PlayedResponse(p.getId(),p.getGameId(),p.getFinish_date(),image);
-			responseList.add(resp);
+			SearchGameListDto s = gamesService.getGameList(p.getGameId());
+			PlayedResponse bs = new PlayedResponse(p.getId(),p.getGameId(),p.getFinish_date(),s.imageUrl());
+			responseList.add(bs);
 		}
 		return responseList;
 	}

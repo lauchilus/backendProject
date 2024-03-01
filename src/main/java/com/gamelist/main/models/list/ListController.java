@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,7 +47,7 @@ public class ListController {
 	
 	@Operation(summary = "add game to a specific collection", description = "blabla")
 	@PostMapping("/addGame/{collectionID}")
-	public ResponseEntity<Map<String, String>> addCollectionGames(@RequestParam int gameID,@PathVariable String collectionID){
+	public ResponseEntity<Map<String, String>> addCollectionGames(@RequestParam int gameID,@PathVariable String collectionID) throws JsonProcessingException {
 		String response = listService.addGameToCollection(gameID,collectionID);
 		Map<String, String> responseBody = new HashMap<>();
 		responseBody.put("msg", "Game Added to collection");
