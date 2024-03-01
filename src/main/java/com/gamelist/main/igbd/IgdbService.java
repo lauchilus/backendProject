@@ -85,7 +85,6 @@ public class IgdbService {
 		List<SearchGameListDto> response = new ArrayList<>();
 		for (JsonNode j : jsonNode) {
 			String a = "";
-			System.out.println(j.has("cover"));
 			if (j.has("cover")) {
 				a = getImageGameUrl(j.get("cover").get("image_id").asText());
 				String image = a;
@@ -111,7 +110,6 @@ public class IgdbService {
 		HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, headers);
 		ResponseEntity<String> response = restTemplate.exchange("https://api.igdb.com/v4/collections", HttpMethod.POST,
 				httpEntity, String.class);
-		System.out.println(response.getBody().toString());
 		return response.getBody().toString();
 	}
 

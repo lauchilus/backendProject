@@ -106,7 +106,6 @@ public class FavoriteService {
 		List<FavoritesResponseDto> responseList = new ArrayList<>();
 		for (Favorite favorite : favorites) {
 			String res = igdbService.searchGameByIdToList(favorite.getGame().getIgdbGameId());
-			System.out.println(res);
 			GameListData dat = getGamelistDataFromService(res);
 			String image = getImageResponse(dat.getCover());
 			FavoritesResponseDto resp = new FavoritesResponseDto(favorite.getId(),

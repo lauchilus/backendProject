@@ -1,6 +1,8 @@
 package com.gamelist.main.models.backlog;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -39,8 +41,11 @@ public class BacklogController {
 	}
 
 	@DeleteMapping("/{backlogId}")
-	public ResponseEntity<String> deleteBacklog(@PathVariable String backlogId){
+	public ResponseEntity<Map<String, String>> deleteBacklog(@PathVariable Long backlogId){
+		System.out.println(backlogId);
 		backlogService.delete(backlogId);
-		return new ResponseEntity<String>("Game deleted from backlog",HttpStatus.OK);
+		Map<String, String> responseBody = new HashMap<>();
+		responseBody.put("msg", "Game Added to collection");
+		return new ResponseEntity<>(responseBody,HttpStatus.OK);
 	}
 }

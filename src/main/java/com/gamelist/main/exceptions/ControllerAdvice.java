@@ -49,4 +49,10 @@ public class ControllerAdvice {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorDto> runTimeException(RuntimeException exception) {
+        ErrorDto response = new ErrorDto(exception.getMessage(), "Invalid arguments");
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 }
