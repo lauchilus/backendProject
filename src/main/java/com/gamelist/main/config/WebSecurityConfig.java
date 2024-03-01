@@ -29,9 +29,10 @@ public class WebSecurityConfig {
 		http
 		.authorizeHttpRequests(requests ->
         requests
-//        .requestMatchers("/auth/**").permitAll()
         .requestMatchers("/register","/v3/api-docs","/v3/api-docs/**","/swagger-ui.html","/swagger-ui/**","index.html","/v3/**").permitAll()
-        .requestMatchers(HttpMethod.GET).permitAll()        
+        .requestMatchers(HttpMethod.GET).permitAll()
+				.requestMatchers(HttpMethod.OPTIONS).permitAll()
+				.requestMatchers(HttpMethod.DELETE).authenticated()
             .requestMatchers(HttpMethod.POST).authenticated()
 			.requestMatchers(HttpMethod.PUT).authenticated())
 			.oauth2ResourceServer(oAuth -> oAuth.jwt(Customizer.withDefaults()));

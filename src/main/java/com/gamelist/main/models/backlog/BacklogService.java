@@ -81,9 +81,7 @@ public class BacklogService {
 		return response;
 	}
 
-	// TODO DELETE SERVICE
-
-	public void delete(String backlogid){
+	public void delete(long backlogid){
 		Backlog backlog = backlogRepo.getReferenceById(backlogid);
 		backlogRepo.delete(backlog);
 	}

@@ -1,7 +1,9 @@
 package com.gamelist.main.models.list;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +46,11 @@ public class ListController {
 	
 	@Operation(summary = "add game to a specific collection", description = "blabla")
 	@PostMapping("/addGame/{collectionID}")
-	public ResponseEntity<String> addCollectionGames(@RequestParam int gameID,@PathVariable String collectionID){
+	public ResponseEntity<Map<String, String>> addCollectionGames(@RequestParam int gameID,@PathVariable String collectionID){
 		String response = listService.addGameToCollection(gameID,collectionID);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		Map<String, String> responseBody = new HashMap<>();
+		responseBody.put("msg", "Game Added to collection");
+		return new ResponseEntity<>(responseBody,HttpStatus.CREATED);
 	}
 	
 	@Operation(summary = "get all games games from collection", description = "blabla")

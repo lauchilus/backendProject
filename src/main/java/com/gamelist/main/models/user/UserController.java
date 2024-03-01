@@ -34,7 +34,7 @@ public class UserController {
 	
 	@PutMapping("/{userId}")
 	@Operation(summary = "update profile ", description = "blabla")
-	public ResponseEntity<User> updateProfile(@PathVariable String userId,@RequestBody UpdateUser updateUser) throws IOException{
+	public ResponseEntity<User> updateProfile(@PathVariable String userId,@ModelAttribute UpdateUser updateUser) throws IOException{
 		User user = userService.updateProfile(userId, updateUser.avatar(),updateUser.username(), updateUser.bio());
 		return ResponseEntity.ok(user);
 	}

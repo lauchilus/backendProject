@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gamelist.main.exceptions.PersonalizedExceptions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -57,7 +58,7 @@ public class PlayedService {
 			game = gameRepo.save(new Game(gameId));
 		}
 		if(playedRepo.existsByGameIdAndUser(game.getIgdbGameId(),user)) {
-			throw new Exception("Game already in list!");
+			throw new PersonalizedExceptions("Game already in list!");
 		}
 		
 		Played played = playedRepo.save(new Played(user,game.getIgdbGameId()));
@@ -90,7 +91,6 @@ public class PlayedService {
 	public GameListData getGamelistDataFromService(String res)
 			throws JsonProcessingException, JsonMappingException {
 		if(objectMapper != null) {
-		System.out.println(res+"oooo************");
 		GameListData[] data = this.objectMapper.readValue(res, GameListData[].class);
 		GameListData dat = data[0];
 		return dat;

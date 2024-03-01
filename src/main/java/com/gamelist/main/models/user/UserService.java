@@ -42,7 +42,6 @@ public class UserService {
 	
 	@Transactional
 	public User updateProfile(String userId, MultipartFile update,String username,String bio) throws IOException {
-		System.out.println(userRepo.existsByUsername(username));
 		User user = userRepo.getReferenceById(userId);
 		if(update != null) {
 			//cloudinary.delete(user.getImage().getId());
@@ -56,11 +55,11 @@ public class UserService {
 			
 		}
 		
-		if(bio != null || bio.isBlank()) {
+		if(bio != null || !bio.isBlank()) {
 			user.updateBio(bio);
 			userRepo.save(user);
 		}
-		if((username != null || username.isBlank()) && !userRepo.existsByUsername(username)) {
+		if((username != null || username.isBlank()) && userRepo.existsByUsername(username)) {
 			user.setUsername(username);
 		}
 		userRepo.save(user);
@@ -79,7 +78,6 @@ public class UserService {
 		}
 		
 		UserResponseDto response = new UserResponseDto(user.getId(),user.getUsername(), user.getBio(), imageUrl);
-		System.out.println(response);
 		return response;
 	}
 
@@ -99,7 +97,6 @@ public class UserService {
 
 	public boolean existUsername(String username) {
 		boolean exist = userRepo.existsByUsername(username);
-		System.out.println(exist);
 		return exist;
 	}
 

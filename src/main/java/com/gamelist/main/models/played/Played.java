@@ -39,8 +39,9 @@ public class Played {
 	
 	private Long gameId;
 
-	private LocalDate finish_date ;
-	
+
+	private LocalDate finish_date;
+
 	public Played(User user, Long gameID) {
 		this.user = user;
 		this.gameId = gameID;
