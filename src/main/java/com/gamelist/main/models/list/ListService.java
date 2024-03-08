@@ -98,10 +98,9 @@ public class ListService {
 		if(list.isEmpty() || list == null) {
 			throw new PersonalizedExceptions("No lists");
 		}
-		List<GetCollectionDto> response = list.stream()
+        return list.stream()
 				.map((Collection collection) -> new GetCollectionDto(collection.getId(), collection.getName(),collection.getImageList().getImageUrl(), collection.getLikes()))
 				.collect(Collectors.toList());
-		return response;
 	}
 
 	@Transactional
@@ -124,7 +123,6 @@ public class ListService {
 		if(!listRepo.existsById(collectionID)){
 			throw new EntityNotFoundException();
 		}
-		Collection collection = listRepo.getReferenceById(collectionID);
 		List<ListGames> listGames = listGamesService.getAllGamesFromCollection(collectionID);
 		List<SearchGameListDto> responseList = new ArrayList<>();
 		for (ListGames game : listGames) {
@@ -136,6 +134,9 @@ public class ListService {
 
 	@Transactional
 	private void saveGameList(Collection collection, Game game) {
+		if(listGamesRepo.existsByGameIgdbGameIdAndCollectionId(game.getIgdbGameId(),collection.getId())){
+			throw new PersonalizedExceptions("Game Already in list");
+		}
 		ListGames listGames = new ListGames(collection, game);
 	    listGamesRepo.save(listGames);
 	    collection.getGamesList().add(listGames);
@@ -156,16 +157,14 @@ public class ListService {
 
 	public String getImageResponse(com.gamelist.main.igbd.CoverGame data){
 		String ss = data.getImage_id();
-		String imageUrl = igdbHelpers.imageBuilder(ss);
-		return imageUrl;
+        return igdbHelpers.imageBuilder(ss);
 	}
 	
 	public GameListData getGamelistDataFromService(String res)
 			throws JsonProcessingException {
 		if(objectMapper != null) {
 		GameListData[] data = this.objectMapper.readValue(res, GameListData[].class);
-		GameListData dat = data[0];
-		return dat;
+            return data[0];
 		}
 		else {
 			throw new PersonalizedExceptions("Something went wrong");

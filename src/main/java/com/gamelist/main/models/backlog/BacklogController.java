@@ -42,7 +42,6 @@ public class BacklogController {
 
 	@DeleteMapping("/{backlogId}")
 	public ResponseEntity<Map<String, String>> deleteBacklog(@PathVariable Long backlogId){
-		System.out.println(backlogId);
 		backlogService.delete(backlogId);
 		Map<String, String> responseBody = new HashMap<>();
 		responseBody.put("msg", "Game Added to collection");

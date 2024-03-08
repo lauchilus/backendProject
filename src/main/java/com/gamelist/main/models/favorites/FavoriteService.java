@@ -82,6 +82,9 @@ public class FavoriteService {
 		if(!userRepo.existsById(userId)) {
 			throw new PersonalizedExceptions("user not found.");
 		}
+		if(favoriteRepo.countByUserId(userId) >= 5){
+			throw new PersonalizedExceptions("You already hav max favorites");
+		}
 		User user = userService.getUser(userId);
 		Game game = gameRepo.getReferenceByIgdbGameId(gameId);
 		if(game==null) {
@@ -126,7 +129,10 @@ public class FavoriteService {
 			throw new RuntimeException();
 		}
 	}
-	
-	 
-	
+
+
+	public void deleteFavorite(String favorite) {
+		Favorite f = favoriteRepo.getReferenceById(favorite);
+		favoriteRepo.delete(f);
+	}
 }

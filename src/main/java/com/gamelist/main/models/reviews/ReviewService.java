@@ -3,7 +3,8 @@ package com.gamelist.main.models.reviews;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gamelist.main.models.game.GamesService;
+import com.gamelist.main.igbd.SearchGameDetailsDto;
+import com.gamelist.main.models.game.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.gamelist.main.igbd.IgdbService;
 import com.gamelist.main.igbd.SearchGameListDto;
-import com.gamelist.main.models.game.Game;
-import com.gamelist.main.models.game.GameRepository;
 import com.gamelist.main.models.played.Played;
 import com.gamelist.main.models.played.PlayedRepository;
 import com.gamelist.main.models.user.User;
@@ -37,6 +36,7 @@ public class ReviewService {
 
 	private final IgdbService igdbService;
 	private final GamesService gamesService;
+	private  final GameDetailsRepository gameDetailsRepository;
 
 	@Transactional
 	public Review create(ReviewPostDto reviewPost) throws JsonProcessingException {
@@ -45,15 +45,20 @@ public class ReviewService {
 		}
 		User user = userRepo.getReferenceById(reviewPost.userId());
 		Game game = gameRepo.getReferenceByIgdbGameId(reviewPost.gameId());
+		Long l  = (long) reviewPost.gameId();
+		GameDetails gameDetails;
+		if(!gameDetailsRepository.existsById(l)){
+			gameDetails = igdbService.getGameDetails(reviewPost.gameId());
+		}
+		gameDetails = gameDetailsRepository.getReferenceById(l);
 		if(reviewRepo.existsByGameAndUser(game, user)) {
 			throw new RuntimeException("You already review this game!");
 		}
-		if(game != null) {
+		if(game != null && gameDetails != null) {
 			game.addRating(reviewPost.rating());
 			game.addFinish();
 		}else {
 			game = gameRepo.save(new Game(reviewPost.gameId()));
-			igdbService.getGameDetails(reviewPost.gameId());
 			game.addRating(reviewPost.rating());
 			game.addFinish();
 		}
@@ -69,7 +74,7 @@ public class ReviewService {
 			throw new PersonalizedExceptions("Review not found");
 		}
 		Review review  = reviewRepo.getReferenceById(id);
-		SearchGameListDto s = gamesService.getGameList(review.getGame().getIgdbGameId());
+		SearchGameDetailsDto s = gamesService.getGameDetails(review.getGame().getIgdbGameId());
 		ReviewResponseDto rr = new ReviewResponseDto(review.getReview_date(),review.getReview(),review.getRating(),s.name(),s.imageUrl(),s.id(),review.getId());
 		return rr;
 	}
@@ -81,7 +86,7 @@ public class ReviewService {
 		}
 		List<ReviewResponseDto> response = new ArrayList<>();
 		for (Review r : reviews) {
-			SearchGameListDto s = gamesService.getGameList(r.getGame().getIgdbGameId());
+			SearchGameDetailsDto s = gamesService.getGameDetails(r.getGame().getIgdbGameId());
 			ReviewResponseDto rr = new ReviewResponseDto(r.getReview_date(),r.getReview(),r.getRating(),s.name(),s.imageUrl(),s.id(),r.getId());
 			response.add(rr);
 		}
@@ -92,13 +97,14 @@ public class ReviewService {
 
 
 	public List<ReviewResponseDto> getTop3UserReviews(String userId) throws JsonProcessingException {
-		List<Review> reviews = reviewRepo.findTop3ByUserIdOrderByIdDesc(userId);
+		List<Review> reviews = reviewRepo.findByUserId(userId);
 		if(reviews.isEmpty()) {
 			throw new PersonalizedExceptions("User does not have reviews");
 		}
 		List<ReviewResponseDto> response = new ArrayList<>();
 		for (Review r : reviews) {
 			SearchGameListDto s = gamesService.getGameList(r.getGame().getIgdbGameId());
+			System.out.println(r.getGame().getIgdbGameId());
 			ReviewResponseDto rr = new ReviewResponseDto(r.getReview_date(),r.getReview(),r.getRating(),s.name(),s.imageUrl(),s.id(),r.getId());
 			response.add(rr);
 		}

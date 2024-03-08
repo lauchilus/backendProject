@@ -11,6 +11,7 @@ import com.gamelist.main.models.game.Game;
 import com.gamelist.main.models.game.GameDetails;
 import com.gamelist.main.models.game.GameRepository;
 import com.gamelist.main.models.game.GamesService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -47,6 +48,7 @@ public class IgdbService {
 		return response.getBody().toString();
 	}
 
+	@Transactional
 	public SearchGameDetailsDto searchGameDetails(long game) throws JsonMappingException, JsonProcessingException {
 		if(!gamesService.exists(game)){
 			APICalypse apiCalypse = new APICalypse()
@@ -74,9 +76,10 @@ public class IgdbService {
 		SearchGameDetailsDto response = processGameToDto(res.getBody());
 		return saveGameDetails(game,response,gamesService.getGame(game));
 	}
-	
-	
 
+
+
+	@Transactional
 	private GameDetails saveGameDetails(long game, SearchGameDetailsDto response, Game g) {
 		GameDetails details = GameDetails.builder()
 				.id(game)
@@ -216,8 +219,8 @@ public class IgdbService {
 	}
 
 	public String listGames(int offset) {
-		APICalypse apiCalypse = new APICalypse().fields("name,cover.image_id").limit(12).offset(offset)
-				.sort("follows", Sort.DESCENDING).where("follows!=null");
+		APICalypse apiCalypse = new APICalypse().fields("name,cover.image_id").limit(36).offset(offset)
+				.sort("rating_count", Sort.DESCENDING);
 		String requestBody = apiCalypse.buildQuery();
 		ResponseEntity<String> response = callEndpointGames(requestBody);
 		return response.getBody().toString();

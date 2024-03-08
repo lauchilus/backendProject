@@ -20,4 +20,5 @@ public interface FavoriteRepository extends JpaRepository<Favorite, String> {
 
 	boolean existsByGameAndUser(Game game, User user);
 
+    int countByUserId(String userId);
 }
