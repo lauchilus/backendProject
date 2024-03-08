@@ -5,10 +5,15 @@ spring:
     username: root
     password: luffy
 
+
+
+
   jpa:
     hibernate:
       ddl-auto: update
     generate-ddl: true
+    show-sql: false
+
 
   jackson:
     default-property-inclusion: non_null
@@ -24,3 +29,4 @@ server:
   compression:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/xml,text/plain
+

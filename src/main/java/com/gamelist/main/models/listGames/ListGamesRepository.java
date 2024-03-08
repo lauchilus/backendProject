@@ -9,4 +9,8 @@ import java.util.List;
 public interface ListGamesRepository extends JpaRepository<ListGames, String> {
 
     List<ListGames> findAllByCollectionId(String collectionid);
+
+    boolean existsByGameIgdbGameId(long igdbGameId);
+
+    boolean existsByGameIgdbGameIdAndCollectionId(long igdbGameId, String id);
 }

@@ -24,7 +24,7 @@ public class GameDetails {
     @JoinColumn(name = "game_id")
     private Game game;
 
-    @Column(length = 1000)
+    @Column(columnDefinition = "TEXT")
     private String summary;
     private String name;
 

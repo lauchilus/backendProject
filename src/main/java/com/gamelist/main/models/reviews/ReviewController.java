@@ -1,6 +1,8 @@
 package com.gamelist.main.models.reviews;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,6 @@ public class ReviewController {
 	@GetMapping("/{id}")
 	public ResponseEntity<ReviewResponseDto> getReview(@PathVariable String id) throws JsonMappingException, JsonProcessingException{
 		ReviewResponseDto review = reviewService.getReview(id);
-		System.out.println(review);
 		return ResponseEntity.status(HttpStatus.OK).body(review);
 	}
 	
@@ -51,6 +52,7 @@ public class ReviewController {
 	}
 	
 	@Operation(summary = "get the las 3 reviews from user", description = "blabla")
+	@CrossOrigin
 	@GetMapping("/profile/{userId}")
 	public ResponseEntity<List<ReviewResponseDto>> getTop3UserReviews(@PathVariable String userId) throws JsonProcessingException{
 		List<ReviewResponseDto> response = reviewService.getTop3UserReviews(userId);
@@ -65,9 +67,11 @@ public class ReviewController {
 	}
 
 	@DeleteMapping("/{reviewId}")
-	public ResponseEntity<String> deleteReview(@PathVariable String reviewId,@RequestBody ReviewUpdate update){
+	public ResponseEntity<Map<String, String>> deleteReview(@PathVariable String reviewId, @RequestBody ReviewUpdate update){
 		reviewService.deleteReview(reviewId);
-		return new ResponseEntity<String>("Review deleted",HttpStatus.OK);
+		Map<String, String> responseBody = new HashMap<>();
+		responseBody.put("msg", "Review Deleted!");
+		return new ResponseEntity<Map<String, String>>(responseBody,HttpStatus.OK);
 	}
 
 }

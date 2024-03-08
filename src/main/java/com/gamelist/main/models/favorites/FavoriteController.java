@@ -1,7 +1,9 @@
 package com.gamelist.main.models.favorites;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +45,12 @@ public class FavoriteController {
 		List<FavoritesResponseDto> response  = favoriteService.getUserTopFavorites(userId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-
-	//TODO DELETE
-	
+	@DeleteMapping("/{favorite}")
+	public ResponseEntity<Map<String, String>> deleteFavorite(@PathVariable String favorite){
+		favoriteService.deleteFavorite(favorite);
+		Map<String, String> responseBody = new HashMap<>();
+		responseBody.put("msg", "Game deleted from favorites");
+		return new ResponseEntity<Map<String, String>>(responseBody,HttpStatus.OK);
+	}
 	
 }

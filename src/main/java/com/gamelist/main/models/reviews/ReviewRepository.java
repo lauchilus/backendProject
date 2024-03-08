@@ -15,7 +15,7 @@ public interface ReviewRepository extends JpaRepository<Review, String> {
 
 	List<Review> findAllByUserId(String user, Pageable page);
 	
-	List<Review> findTop3ByUserIdOrderByIdDesc(String user);
+	List<Review> findByUserId(String user);
 	
 	boolean existsByGameAndUser(Game game, User user);
 

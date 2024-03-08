@@ -35,6 +35,7 @@ public class GamesService {
         GameDetails game = new GameDetails();
         if(!gameRepository.existsByIgdbGameId(details.getId())){
             gameRepository.save(Game.builder().igdbGameId(details.getId()).build());
+            game = gameDetailsRepository.save(details);
         } else if (!gameDetailsRepository.existsById(details.getId()) && gameRepository.existsByIgdbGameId(details.getId())) {
             game = gameDetailsRepository.save(details);
         }

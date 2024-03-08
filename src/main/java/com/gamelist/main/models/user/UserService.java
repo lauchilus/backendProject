@@ -1,19 +1,16 @@
 package com.gamelist.main.models.user;
 
-import java.io.IOException;
-
-import com.gamelist.main.exceptions.PersonalizedExceptions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.gamelist.main.auth.RegisterDto;
 import com.gamelist.main.cloudinary.CloudinaryComs;
+import com.gamelist.main.exceptions.PersonalizedExceptions;
 import com.gamelist.main.models.images.ImageRepository;
 import com.gamelist.main.models.images.Images;
 import com.gamelist.main.models.reviews.ReviewService;
-
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public class UserService {
@@ -41,11 +38,11 @@ public class UserService {
 
 	
 	@Transactional
-	public User updateProfile(String userId, MultipartFile update,String username,String bio) throws IOException {
+	public User updateProfile(String userId,UpdateUser updateUser) throws IOException {
 		User user = userRepo.getReferenceById(userId);
-		if(update != null) {
+		if(updateUser.avatar() != null) {
 			//cloudinary.delete(user.getImage().getId());
-			Images image = cloudinary.upload(update);
+			Images image = cloudinary.upload(updateUser.avatar());
 			if(user.getImage() != null) {
 				imagesRepo.delete(user.getImage());
 			}
@@ -55,12 +52,12 @@ public class UserService {
 			
 		}
 		
-		if(bio != null || !bio.isBlank()) {
-			user.updateBio(bio);
+		if(updateUser.bio() != null || !updateUser.bio().isBlank()) {
+			user.updateBio(updateUser.bio());
 			userRepo.save(user);
 		}
-		if((username != null || username.isBlank()) && userRepo.existsByUsername(username)) {
-			user.setUsername(username);
+		if((updateUser.username() != null || updateUser.username().isBlank()) && userRepo.existsByUsername(updateUser.username())) {
+			user.setUsername(updateUser.username());
 		}
 		userRepo.save(user);
 		return user;

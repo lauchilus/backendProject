@@ -6,6 +6,8 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,7 +36,7 @@ public class IgdbController {
 	public ResponseEntity<List<SearchGameListDto>> games(@RequestParam int offset) throws JsonMappingException, JsonProcessingException {
 		String list = igdb.listGames(offset);
 		List<SearchGameListDto> response = igdb.processGameToListDto(list);
-		return ResponseEntity.ok(response);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@Operation(summary = "get game details", description = "blabla")

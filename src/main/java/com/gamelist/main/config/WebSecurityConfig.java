@@ -22,20 +22,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-
-	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http
-		.authorizeHttpRequests(requests ->
-        requests
-        .requestMatchers("/register","/v3/api-docs","/v3/api-docs/**","/swagger-ui.html","/swagger-ui/**","index.html","/v3/**").permitAll()
-        .requestMatchers(HttpMethod.GET).permitAll()
-				.requestMatchers(HttpMethod.OPTIONS).permitAll()
+		http.authorizeHttpRequests(requests ->
+        requests.requestMatchers(HttpMethod.GET).permitAll()
+				.requestMatchers(HttpMethod.POST).authenticated()
+				.requestMatchers(HttpMethod.PUT).authenticated()
 				.requestMatchers(HttpMethod.DELETE).authenticated()
-            .requestMatchers(HttpMethod.POST).authenticated()
-			.requestMatchers(HttpMethod.PUT).authenticated())
-			.oauth2ResourceServer(oAuth -> oAuth.jwt(Customizer.withDefaults()));
+				)
+				.oauth2ResourceServer(oAuth -> oAuth.jwt(Customizer.withDefaults()))
+						;
 		return http.build();
 	}
 

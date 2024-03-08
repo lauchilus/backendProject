@@ -1,7 +1,9 @@
 package com.gamelist.main.models.played;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +43,11 @@ public class PlayedController {
 		
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	
-	//TODO deletes
-
 	@DeleteMapping("/{played}")
-	public ResponseEntity<String> deletePlayed(@PathVariable String played){
+	public ResponseEntity<Map<String, String>> deletePlayed(@PathVariable String played){
 		playedService.deletePlayed(played);
-		return new ResponseEntity<String>("Game deleted from played",HttpStatus.OK);
+		Map<String, String> responseBody = new HashMap<>();
+		responseBody.put("msg", "Game deleted from played");
+		return new ResponseEntity<Map<String, String>>(responseBody,HttpStatus.OK);
 	}
 }
