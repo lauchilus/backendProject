@@ -75,7 +75,7 @@ public class ReviewService {
 		}
 		Review review  = reviewRepo.getReferenceById(id);
 		SearchGameDetailsDto s = gamesService.getGameDetails(review.getGame().getIgdbGameId());
-		ReviewResponseDto rr = new ReviewResponseDto(review.getReview_date(),review.getReview(),review.getRating(),s.name(),s.imageUrl(),s.id(),review.getId());
+		ReviewResponseDto rr = new ReviewResponseDto(review.getReviewDate(),review.getReview(),review.getRating(),s.name(),s.imageUrl(),s.id(),review.getId());
 		return rr;
 	}
 	
@@ -87,7 +87,7 @@ public class ReviewService {
 		List<ReviewResponseDto> response = new ArrayList<>();
 		for (Review r : reviews) {
 			SearchGameDetailsDto s = gamesService.getGameDetails(r.getGame().getIgdbGameId());
-			ReviewResponseDto rr = new ReviewResponseDto(r.getReview_date(),r.getReview(),r.getRating(),s.name(),s.imageUrl(),s.id(),r.getId());
+			ReviewResponseDto rr = new ReviewResponseDto(r.getReviewDate(),r.getReview(),r.getRating(),s.name(),s.imageUrl(),s.id(),r.getId());
 			response.add(rr);
 		}
 		
@@ -97,7 +97,7 @@ public class ReviewService {
 
 
 	public List<ReviewResponseDto> getTop3UserReviews(String userId) throws JsonProcessingException {
-		List<Review> reviews = reviewRepo.findByUserId(userId);
+		List<Review> reviews = reviewRepo.findTop3ByUserIdOrderByReviewDateDesc(userId);
 		if(reviews.isEmpty()) {
 			throw new PersonalizedExceptions("User does not have reviews");
 		}
@@ -105,7 +105,7 @@ public class ReviewService {
 		for (Review r : reviews) {
 			SearchGameListDto s = gamesService.getGameList(r.getGame().getIgdbGameId());
 			System.out.println(r.getGame().getIgdbGameId());
-			ReviewResponseDto rr = new ReviewResponseDto(r.getReview_date(),r.getReview(),r.getRating(),s.name(),s.imageUrl(),s.id(),r.getId());
+			ReviewResponseDto rr = new ReviewResponseDto(r.getReviewDate(),r.getReview(),r.getRating(),s.name(),s.imageUrl(),s.id(),r.getId());
 			response.add(rr);
 		}
 		
@@ -118,7 +118,7 @@ public class ReviewService {
 		}
 		Review review = reviewRepo.getReferenceById(update.reviewText());
 		if(update.date() != null){
-			review.setReview_date(update.date());
+			review.setReviewDate(update.date());
 		}
 		if(update.rating() > 0 ){
 			review.setRating(update.rating());
@@ -133,4 +133,8 @@ public class ReviewService {
 		Review review = reviewRepo.getReferenceById(reviewId);
 		reviewRepo.delete(review);
 	}
+
+    public Integer countUserReviews(String userId) {
+		return reviewRepo.countByUserId(userId);
+    }
 }

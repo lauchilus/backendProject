@@ -50,4 +50,13 @@ public class PlayedController {
 		responseBody.put("msg", "Game deleted from played");
 		return new ResponseEntity<Map<String, String>>(responseBody,HttpStatus.OK);
 	}
+
+	@GetMapping("/profile/total/{userId}")
+	public ResponseEntity<Map<String, Integer>> getCountReviews(@PathVariable String userId){
+		Integer total = playedService.countUserReviews(userId);
+		Map<String, Integer> responseBody = new HashMap<>();
+		responseBody.put("total", total);
+		return new ResponseEntity<Map<String, Integer>>(responseBody,HttpStatus.OK);
+
+	}
 }

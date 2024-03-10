@@ -38,7 +38,7 @@ public class Review {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 	
-	private LocalDate review_date;
+	private LocalDate reviewDate;
 	private String review;
 	
 	@Min(0)
@@ -53,7 +53,7 @@ public class Review {
 		this.user = user;
 		this.review = review;
 		this.game = game;
-		this.review_date = LocalDate.now();
+		this.reviewDate = LocalDate.now();
 		this.rating = rating;
 	}
 }

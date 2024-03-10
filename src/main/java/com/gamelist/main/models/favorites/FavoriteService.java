@@ -135,4 +135,8 @@ public class FavoriteService {
 		Favorite f = favoriteRepo.getReferenceById(favorite);
 		favoriteRepo.delete(f);
 	}
+
+	public Integer countUserReviews(String userId) {
+		return favoriteRepo.countByUserId(userId);
+	}
 }

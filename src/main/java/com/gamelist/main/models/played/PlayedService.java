@@ -104,5 +104,9 @@ public class PlayedService {
 		Played p = playedRepo.getReferenceById(played);
 		playedRepo.delete(p);
 	}
-	
+
+
+	public Integer countUserReviews(String userId) {
+		return playedRepo.countByUserId(userId);
+	}
 }

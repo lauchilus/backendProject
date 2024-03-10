@@ -16,10 +16,11 @@ public interface ReviewRepository extends JpaRepository<Review, String> {
 	List<Review> findAllByUserId(String user, Pageable page);
 	
 	List<Review> findByUserId(String user);
+
+	List<Review> findTop3ByUserIdOrderByReviewDateDesc(String user);
 	
 	boolean existsByGameAndUser(Game game, User user);
 
 
-	
-	
+    Integer countByUserId(String userId);
 }

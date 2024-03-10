@@ -47,4 +47,14 @@ public class BacklogController {
 		responseBody.put("msg", "Game Added to collection");
 		return new ResponseEntity<>(responseBody,HttpStatus.OK);
 	}
+
+	@GetMapping("/profile/total/{userId}")
+	public ResponseEntity<Map<String, Integer>> getCountBacklog(@PathVariable String userId){
+		Integer total = backlogService.countBacklog(userId);
+		Map<String, Integer> responseBody = new HashMap<>();
+		responseBody.put("total", total);
+		return new ResponseEntity<Map<String, Integer>>(responseBody,HttpStatus.OK);
+
+	}
+
 }

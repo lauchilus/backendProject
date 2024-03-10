@@ -16,4 +16,5 @@ public interface BacklogRepository extends JpaRepository<Backlog, Long> {
 
 	Backlog getReferenceByUserAndGame(User user, Game game);
 
+    Integer countByUserId(String userId);
 }
