@@ -89,4 +89,8 @@ public class BacklogService {
 		Backlog backlog = backlogRepo.getReferenceById(backlogid);
 		backlogRepo.delete(backlog);
 	}
+
+    public Integer countBacklog(String userId) {
+		return backlogRepo.countByUserId(userId);
+    }
 }

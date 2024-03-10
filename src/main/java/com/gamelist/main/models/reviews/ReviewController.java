@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -67,11 +68,20 @@ public class ReviewController {
 	}
 
 	@DeleteMapping("/{reviewId}")
-	public ResponseEntity<Map<String, String>> deleteReview(@PathVariable String reviewId, @RequestBody ReviewUpdate update){
+	public ResponseEntity<Map<String, String>> deleteReview(@PathVariable String reviewId){
 		reviewService.deleteReview(reviewId);
 		Map<String, String> responseBody = new HashMap<>();
 		responseBody.put("msg", "Review Deleted!");
 		return new ResponseEntity<Map<String, String>>(responseBody,HttpStatus.OK);
+	}
+
+	@GetMapping("/profile/total/{userId}")
+	public ResponseEntity<Map<String, Integer>> getCountReviews(@PathVariable String userId){
+		Integer total = reviewService.countUserReviews(userId);
+		Map<String, Integer> responseBody = new HashMap<>();
+		responseBody.put("total", total);
+		return new ResponseEntity<Map<String, Integer>>(responseBody,HttpStatus.OK);
+
 	}
 
 }
