@@ -1,18 +1,17 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/gamelist-test
-    username: root
-    password: luffy
-
-
-
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/gamelist
+    username: myuser
+    password: mypassword
 
   jpa:
     hibernate:
       ddl-auto: update
     generate-ddl: true
-    show-sql: false
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
 
 
   jackson:

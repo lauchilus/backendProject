@@ -23,9 +23,9 @@ public class CloudService {
 	Cloudinary cloudinary;
 
 
-	private String cloudName = SecretsStore.CLOUD_NAME;
-	private String apiKey = SecretsStore.API_KEY; 
-	private String apiSecret = SecretsStore.API_SECRET;
+	private String cloudName;
+	private String apiKey;
+	private String apiSecret;
 
     public CloudService() {
         Map<String, String> valuesMap = new HashMap<>();
