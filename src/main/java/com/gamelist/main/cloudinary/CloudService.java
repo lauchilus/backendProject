@@ -21,16 +21,17 @@ import com.gamelist.main.helpers.SecretsStore;
 public class CloudService {
 
 	Cloudinary cloudinary;
-	
+
+
 	private String cloudName = SecretsStore.CLOUD_NAME;
 	private String apiKey = SecretsStore.API_KEY; 
 	private String apiSecret = SecretsStore.API_SECRET;
 
     public CloudService() {
         Map<String, String> valuesMap = new HashMap<>();
-        valuesMap.put("cloud_name", cloudName);
-        valuesMap.put("api_key", apiKey);
-        valuesMap.put("api_secret", apiSecret);
+        valuesMap.put("cloud_name", System.getenv("cloudName"));
+        valuesMap.put("api_key", System.getenv("apiKey"));
+        valuesMap.put("api_secret", System.getenv("apiSecret"));
         cloudinary = new Cloudinary(valuesMap);
     }
 

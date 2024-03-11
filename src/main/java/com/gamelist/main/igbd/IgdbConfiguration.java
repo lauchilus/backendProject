@@ -17,13 +17,17 @@ public class IgdbConfiguration {
 
 	private String apiToken;
 
-	private String apiClientId = SecretsStore.API_CLIENT_ID;
+	private String apiClientId;
 	
-	private String clientSecret = SecretsStore.CLIENT_SECRET;
+	private String clientSecret;
 
 	@Bean
 	HttpHeaders apiHeaders() {
-		
+		apiToken = System.getenv("apiToken");
+		apiClientId = System.getenv("apiClientId");
+		clientSecret = System.getenv("clientSecret");
+
+
 		TwitchAuthenticator tAuth = TwitchAuthenticator.INSTANCE;
 		TwitchToken token = tAuth.requestTwitchToken(apiClientId, clientSecret);
 		apiToken = token.getAccess_token();
