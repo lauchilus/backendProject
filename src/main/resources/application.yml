@@ -2,8 +2,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://ep-tiny-feather-a43s2482.us-east-1.pg.koyeb.app/koyebdb?user=koyeb-adm&password=${secret_password}
-    username: myuser
-    password: mypassword
+    username: koyeb-adm
+    password: ${secret_password}
 
   jpa:
     hibernate:
