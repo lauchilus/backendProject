@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
-@CrossOrigin("http://localhost:4200")
+@CrossOrigin("https://gamelist-app.netlify.app/")
 @RequestMapping("/api/v1/lists")
 @Tag(name = "Lists")
 @RequiredArgsConstructor

@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @Controller
-@CrossOrigin("http://localhost:4200")
+@CrossOrigin("https://gamelist-app.netlify.app/")
 @RequestMapping("/api/v1/reviews")
 @Tag(name = "Review")
 @RequiredArgsConstructor

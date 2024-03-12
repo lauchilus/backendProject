@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@CrossOrigin("http://localhost:4200")
+@CrossOrigin("https://gamelist-app.netlify.app/")
 @RequestMapping("/api/v1/games")
 @Tag(name = "User")
 @RequiredArgsConstructor
