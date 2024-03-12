@@ -27,6 +27,10 @@ public class CloudService {
 	private String apiSecret;
 
     public CloudService() {
+        cloudName = System.getenv("cloudName");
+        apiKey = System.getenv("apiKey");
+        apiSecret = System.getenv("apiSecret");
+
         Map<String, String> valuesMap = new HashMap<>();
         valuesMap.put("cloud_name", System.getenv("cloudName"));
         valuesMap.put("api_key", System.getenv("apiKey"));
