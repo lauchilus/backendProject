@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import com.api.igdb.request.IGDBWrapper;
 import com.api.igdb.request.TwitchAuthenticator;
 import com.api.igdb.utils.TwitchToken;
-import com.gamelist.main.helpers.SecretsStore;
 
 @Configuration
 public class IgdbConfiguration {
