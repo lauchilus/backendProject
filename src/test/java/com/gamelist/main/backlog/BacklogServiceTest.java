@@ -15,6 +15,7 @@ import com.gamelist.main.models.backlog.Backlog;
 import com.gamelist.main.models.backlog.BacklogRepository;
 import com.gamelist.main.models.backlog.BacklogService;
 import com.gamelist.main.models.backlog.BacklogUserResponseDto;
+import com.gamelist.main.models.game.GamesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -56,11 +57,14 @@ public class BacklogServiceTest {
 	@Mock
 	private IgdbService igdb;
 
+	@Mock
+	private GamesService gamesService;
+
 	@BeforeEach
 	void setUp() {
 		
 		MockitoAnnotations.openMocks(this);
-		backlogService = new BacklogService(backlogRepository,userRepository,gameRepository,igdb);
+		backlogService = new BacklogService(backlogRepository,userRepository,gameRepository,igdb,gamesService);
 		
 	}
 	

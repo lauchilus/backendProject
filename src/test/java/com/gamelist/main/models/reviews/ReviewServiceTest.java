@@ -167,7 +167,7 @@ class ReviewServiceTest {
 		reviews.add(review2);
 		reviews.add(review3);
 
-		when(reviewRepo.findTop3ByUserIdOrderByIdDesc(anyString())).thenReturn(reviews);
+		when(reviewRepo.findTop3ByUserIdOrderByReviewDateDesc(anyString())).thenReturn(reviews);
 		when(igdbService.getDataToDto(anyLong())).thenReturn(searchGameDto);
 		
 		
